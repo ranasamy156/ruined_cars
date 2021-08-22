@@ -1,0 +1,20 @@
+[03-Feb-2021 03:23:17 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function mysql_query() in /home/alsaifit/public_html/cars/api/model/get_manufactures.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/alsaifit/public_html/cars/api/model/get_manufactures.php on line 8
+[03-Feb-2021 03:23:19 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function mysql_query() in /home/alsaifit/public_html/cars/api/model/get_manufactures.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/alsaifit/public_html/cars/api/model/get_manufactures.php on line 8
+[03-Feb-2021 03:58:05 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function export() in /home/alsaifit/public_html/cars/api/model/get_manufactures.php:20
+Stack trace:
+#0 {main}
+  thrown in /home/alsaifit/public_html/cars/api/model/get_manufactures.php on line 20
+[03-Feb-2021 04:01:56 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function export() in /home/alsaifit/public_html/cars/api/model/get_manufactures.php:20
+Stack trace:
+#0 {main}
+  thrown in /home/alsaifit/public_html/cars/api/model/get_manufactures.php on line 20
+[03-Feb-2021 06:04:11 America/New_York] PHP Fatal error:  Uncaught Error: Call to a member function character_set_name() on null in /home/alsaifit/public_html/cars/api/model/get_manufactures.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/alsaifit/public_html/cars/api/model/get_manufactures.php on line 11

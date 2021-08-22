@@ -1,0 +1,15 @@
+[11-Feb-2021 02:50:23 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined method Database::set_charset() in /home/alsaifit/public_html/cars/vendor/api/apicomments.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/alsaifit/public_html/cars/vendor/api/apicomments.php on line 5
+[11-Feb-2021 02:50:26 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined method Database::set_charset() in /home/alsaifit/public_html/cars/vendor/api/apicomments.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/alsaifit/public_html/cars/vendor/api/apicomments.php on line 5
+[12-Feb-2021 05:14:34 America/New_York] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 4096 bytes) in /home/alsaifit/public_html/cars/vendor/api/apisearch.php on line 12
+[12-Feb-2021 05:15:01 America/New_York] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 4096 bytes) in /home/alsaifit/public_html/cars/vendor/api/apisearch.php on line 12
+[12-Feb-2021 11:25:29 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, bool given in /home/alsaifit/public_html/cars/vendor/api/apisearch.php on line 12
+[13-Feb-2021 05:29:49 America/New_York] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 14696448 bytes) in /home/alsaifit/public_html/cars/vendor/database.php on line 21
+[13-Feb-2021 07:37:30 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, bool given in /home/alsaifit/public_html/cars/vendor/api/apisearch.php on line 14
+[13-Feb-2021 07:39:07 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, bool given in /home/alsaifit/public_html/cars/vendor/api/apisearch.php on line 14
+[13-Feb-2021 07:42:14 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, bool given in /home/alsaifit/public_html/cars/vendor/api/apisearch.php on line 14
