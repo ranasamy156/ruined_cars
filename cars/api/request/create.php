@@ -18,7 +18,7 @@ $baladya=$_POST['baladya'];
 $direct=$_POST['direct'];
 
 $model_id = $_POST['model_id'];
-
+$man_id = $_POST['man_id'];
 $plate_number = $_POST['plate_number'];
 $en_plate_number = $_POST['en_platenum'];
 $plate_color = $_POST['plate_color'];
@@ -49,7 +49,7 @@ if (true) {
     $table2 = Tables::$NOTIFY;
            //print_r("BeforeInsert");
 
-    $sql = "INSERT INTO $table(model_id, plate_number, color, lat, lng, state_id, city_id, area_id, user_id, created_at, updated_at, status_id,en_platenum,plate_color,chassis,baladya,direct) VALUES ($model_id,'$plate_number','$color',$lat,$longitude,$state,$city,$area,$user,'$created_at','$updated_at',$status_id,'$en_plate_number','$plate_color','$chassis','$baladya','$direct')";
+    $sql = "INSERT INTO $table(man_id,model_id, plate_number, color, lat, lng, state_id, city_id, area_id, user_id, created_at, updated_at, status_id,en_platenum,plate_color,chassis,baladya,direct) VALUES ($man_id,$model_id,'$plate_number','$color',$lat,$longitude,$state,$city,$area,$user,'$created_at','$updated_at',$status_id,'$en_plate_number','$plate_color','$chassis','$baladya','$direct')";
     if ($conn->query($sql) === TRUE) {
         $last_id = $conn->insert_id;
         uploadRequestImages($_FILES,$last_id);

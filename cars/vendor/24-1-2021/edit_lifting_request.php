@@ -789,13 +789,15 @@ input required[type=number] {
               $last_id = $database->mysqli_insert_id();
 
               if($save == "ok"){
-
-                $dir ="../../images/";
+                $extensions = ['jpeg','jpg','gif','png','swf','tiff'];
                 // Count # of uploaded files in array
                 $total = count($_FILES['upload']['name']);
-  
+                
                 // Loop through each file
                 for( $i=0 ; $i < $total ; $i++ ) {
+                  $ext = pathinfo($_FILES['upload']['name'][$i], PATHINFO_EXTENSION);
+                    if (in_array($ext, $extensions)) {
+                  $dir ="../../images/";
   
                   //Get the temp file path
                   $tmpFilePath = $_FILES['upload']['tmp_name'][$i];
@@ -812,6 +814,9 @@ input required[type=number] {
   
                     }
                   }
+                }else{
+                  echo "<script> alert('الملف غير مدعوم. الملفات المدعومة هي pdf ، jpg ، jpeg ، gif ، swf ، tiff') </script>";
+                }
                 }
 
                 $message = "تم تعديل محضر رفع للطلب رقم ".$_GET['r'];

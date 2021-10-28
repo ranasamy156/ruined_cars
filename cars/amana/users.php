@@ -58,7 +58,7 @@
 
 
 
-       public function add(){
+        public function add(){
             $m=parent::RunDML("insert into users values (Default, '".$this->getname()."' ,'".$this->getphone()."' , 
             '".$this->getusername()."' , '".$this->getpassword()."' , '2', 'regular', 'nonsuper')");
 
@@ -67,7 +67,7 @@
 
         public function delete(){
             $m=parent::RunDML("delete from users where id='".$_GET["n"]."' ");
-            
+            return $m;
         }
 
         public function update(){

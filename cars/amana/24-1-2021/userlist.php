@@ -161,11 +161,17 @@ only screen and (max-width: 760px),
           <div class="adminpanel">
           <h2 style="font-family:'Amiri', serif;text-align:center;"><?php echo $expr['uslist'] ?></h2>
           <?php
-            include_once '../users.php';
-            $db = new Users();
-            $rs = $db->GetAll();
+            include_once '../../database.php';
+            $sql = "CALL getUsers(? , ?)";
+            $typeID = $_SESSION['type_id'];
+            $userID = $_SESSION['id'];
 
-            if ($row = mysqli_fetch_assoc($rs)) {
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(1, $typeID, PDO::PARAM_INT);
+            $stmt->bindParam(2, $userID, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            
     ?>
           <table style="margin:25px;text-align:<?php echo $expr['align'] ?>;font-size:large;" class="table table-borderd table-striped">
           <thead>
@@ -173,7 +179,7 @@ only screen and (max-width: 760px),
               <th> <?php echo $expr['edit'] ?> </th>
               <th> <?php echo $expr['remove'] ?> </th>
             </thead>
-            <?php foreach($rs as $row){ ?>
+            <?php foreach($stmt as $row){ ?>
             <tbody>
               <td><?php echo ($row["name"]); ?></td>
               <td> <a href="useredit.php?n=<?php echo ($row["id"]); ?>" ><?php echo $expr['edit'] ?> </a></td>
@@ -181,18 +187,9 @@ only screen and (max-width: 760px),
 
             </tbody>
             <?php
-                      }
-                        ?>
-              
-              <?php
-              
-            }else{ ?>
-            <tbody>        
-            <td><p style="font-size:large;float:<?php echo $expr['right'] ?>;"><?php echo $expr['nousers'] ?></p></th>
-            </tbody>
-            <?php
-            }
+              }
             ?>
+              
             </table>
           </div>
       

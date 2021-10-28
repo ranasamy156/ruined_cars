@@ -1,6 +1,6 @@
 <?php
 include 'lang.php';
-
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "2") {
 ?>
@@ -16,7 +16,7 @@ if (isset($_SESSION["id"])) {
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <!-- Ionicons 2.0.0 -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-   <!-- iCheck -->
+    <!-- iCheck -->
     <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
     <!-- Morris chart -->
     <link rel="stylesheet" href="plugins/morris/morris.css">
@@ -40,7 +40,7 @@ if (isset($_SESSION["id"])) {
           folder instead of downloading all of them to reduce the load. -->
       <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
     <?php }else{ ?>
-       <!-- Bootstrap 3.3.4 -->
+      <!-- Bootstrap 3.3.4 -->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
       <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
       <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
@@ -51,7 +51,8 @@ if (isset($_SESSION["id"])) {
           folder instead of downloading all of them to reduce the load. -->
       <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
     <?php
-     }?> 
+      }
+    ?> 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -107,11 +108,11 @@ if (isset($_SESSION["id"])) {
           <div><h3 style="font-size:x-large;text-align:center;font-family:'Amiri', serif;" class="navbar-brand" ><?php echo $expr['carslist'] ?></h3></div>
           <a style="float:left;margin:15px;" href="reportcar.php" class="btn btn-default">طباعة تقرير</a>
 
-         <div class="row">
+        <div class="row">
           <div class="col-md-12 m-auto">
           <div class="table-responsive">
-         <table style="width:100%;text-align:<?php echo $expr['align'] ?>;" class="table bg-default">
-         <thead>
+        <table style="width:100%;text-align:<?php echo $expr['align'] ?>;" class="table bg-default">
+        <thead>
                   <tr>
                     <th scope="col"><?php echo $expr['carnum'] ?></th>
                     <th scope="col" colspan="2"  style="text-align:center;"><?php echo $expr['carman'] ?></th>
@@ -120,11 +121,11 @@ if (isset($_SESSION["id"])) {
                   </tr>
                 </thead>
                 <?php
-                 include_once '../database.php';
-                 $db1 = new database();
-                 $rs = $db1->GetData("select * from manufactures");
-                 if($row = mysqli_fetch_assoc($rs)){
-                foreach($rs as $row){
+                $sql = "CALL getCarManufactures()";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+
+                foreach($stmt as $row){
                         ?>
                     <tbody>
                       <tr>
@@ -168,28 +169,32 @@ if (isset($_SESSION["id"])) {
                 }
                     if(isset($_POST["btnsave"]))
                     {
-                        include_once '../database.php';
-                            $db3 = new database();
-                            $rs2 = $db3->RunDML("insert into manufactures values (Default, '".$_POST['manf']."','".$_POST['enmanf']."')");
-                          if($rs2=="ok"){
+                          $sql = "CALL insertCarManufacture(? , ?)";
+                          $manf = $_POST['manf'];
+                          $enmanf = $_POST['enmanf'];
+              
+                          $stmt = $conn->prepare($sql);
+                          $stmt->bindParam(1, $manf, PDO::PARAM_STR, 100);
+                          $stmt->bindParam(2, $enmanf, PDO::PARAM_STR, 100);
+                          $rs = $stmt->execute();
+                          if($rs){
                             echo("<div class='alert alert-success'>".$expr['carsuccess']."</div>");
-                    }
-                          else{
-                            echo("<div class='alert alert-danger'> Error is ".$msg."</div>");	
-                      }
+                          }else{
+                            echo("<div class='alert alert-danger'> Error </div>");	
+                          }
                     }
                     if(isset($_POST['btnmo'])){
-                      include_once '../database.php';
-                            $db4 = new database();
-                            $rs3 = $db4->GetData("select * from manufactures");
-                            if($row1 = mysqli_fetch_assoc($rs3)){
+                          $sql = "CALL getCarManufactures()";
+                          $stmt = $conn->prepare($sql);
+                          $stmt->execute();
+                            
                       ?>
                       <div>
                       <div style="margin-top:65px;">
                       <select name="model" style="float:<?php echo $expr['right'] ?>;" required>
                         <option value="<?php echo $expr['choose'] ?> <?php echo $expr['carman'] ?>" selected disabled><?php echo $expr['choose'] ?> <?php echo $expr['carman'] ?></option>
                         <?php
-                        foreach($rs3 as $row1){
+                        foreach($stmt as $row1){
                           ?>
                         <option value="<?php echo($row1['id']); ?>" ><?php echo($row1['name']); ?></option>
                         <?php
@@ -207,19 +212,30 @@ if (isset($_SESSION["id"])) {
                 <div class="box-footer clearfix">
                   <button class="pull-left btn btn-default" name="savebtn"><?php echo $expr['save'] ?> <i class="fa fa-arrow-circle-<?php echo $expr['left'] ?>"></i></button>
                 </div>
-                     
+                    
                     <?php
-                            }
+                            
                     
                   }if(isset($_POST['savebtn'])){
-                    include_once '../database.php';
-                          $db5 = new database();
-                          $rs4 = $db5->RunDML("insert into models values (Default, '".$_POST['model']."', '".$_POST['mod']."', '".$_POST['enmod']."', '2020')");
+                    $sql = "CALL insertCarModel(? , ? , ?)";
+                    $typeID = $_POST['model'];
+                    $model = $_POST['mod'];
+                    $enmod = $_POST['enmod'];
+        
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(1, $typeID, PDO::PARAM_INT);
+                    $stmt->bindParam(2, $model, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(3, $enmod, PDO::PARAM_STR, 100);
+                    $rs = $stmt->execute();
+                    if($rs){
+                      echo("<div class='alert alert-success'>".$expr['carsuccess']."</div>");
+                    }else{
+                      echo("<div class='alert alert-danger'> Error </div>");	
+                    }
                   }
-                }
+                
                     ?>
                 </form>
-             
             </div>
             </div>
       

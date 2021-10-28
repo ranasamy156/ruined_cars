@@ -21,7 +21,8 @@ while ($row = $result->fetch_assoc()) {
         array(
             "id" => $row['id'],
             "manufacture_id" => $row['manufacture_id'],
-            "name" => $row['name']
+            "name" => $row['name'],
+            "en_name"=>$row['en_name']
 
         );
 

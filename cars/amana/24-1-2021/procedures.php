@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "2") {
 ?>
@@ -292,17 +293,19 @@ if (isset($_SESSION["id"])) {
                 <?php
                     if(isset($_POST["btnsave"]))
                     {
-                        include_once "../Procedures.php";
-                        $pro1=new Procedures();
-                        
-                          $pro1->setdescription($_POST["des"]);
-                          $msg=$pro1->add();
-                          if($msg=="ok"){
-                            
-                            echo("<div class='alert alert-success'>".$expr['proceduresuccess']."</div>");
-                          }
-                          else
-                            echo("<div class='alert alert-danger'> Error is ".$msg."</div>");	
+                      $des = $_POST["des"];
+                      $typeID = $_SESSION['type_id'];
+                      $sql = "CALL insertProcedures(? , ?)";
+  
+                      $stmt = $conn->prepare($sql);
+                      $stmt->bindParam(1, $des, PDO::PARAM_STR, 100);
+                      $stmt->bindParam(2, $typeID, PDO::PARAM_INT);
+                      $rs = $stmt->execute();
+                      if($rs){
+                        echo("<div class='alert alert-success'>".$expr['proceduresuccess']."</div>");
+                      }
+                      else
+                        echo("<div class='alert alert-danger'> Error is ".$rs."</div>");	
                       }
                     ?>
               </form>

@@ -18,3 +18,203 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in /home/alsaifit/public_html/cars/api/model/get_manufactures.php on line 11
+[29-Sep-2021 03:13:28 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[29-Sep-2021 03:13:28 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[29-Sep-2021 03:16:21 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[29-Sep-2021 03:16:21 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[29-Sep-2021 07:16:39 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[29-Sep-2021 07:16:39 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[29-Sep-2021 22:49:36 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[29-Sep-2021 22:49:36 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[01-Oct-2021 22:20:25 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[01-Oct-2021 22:20:25 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[01-Oct-2021 22:49:42 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[01-Oct-2021 22:49:42 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[01-Oct-2021 22:52:58 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[01-Oct-2021 22:52:58 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[03-Oct-2021 00:31:07 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[03-Oct-2021 00:31:07 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[03-Oct-2021 05:11:08 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[03-Oct-2021 05:11:08 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[03-Oct-2021 14:34:51 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[03-Oct-2021 14:34:51 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[03-Oct-2021 21:30:16 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[03-Oct-2021 21:30:16 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[03-Oct-2021 21:32:10 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[03-Oct-2021 21:32:10 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[03-Oct-2021 23:13:36 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[03-Oct-2021 23:13:36 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[04-Oct-2021 00:18:28 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[04-Oct-2021 00:18:28 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[04-Oct-2021 01:23:41 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[04-Oct-2021 01:23:41 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[04-Oct-2021 06:46:05 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[04-Oct-2021 06:46:06 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[04-Oct-2021 06:47:16 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[04-Oct-2021 06:47:16 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[04-Oct-2021 14:52:48 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[04-Oct-2021 14:52:48 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[04-Oct-2021 15:27:49 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[04-Oct-2021 15:27:49 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[04-Oct-2021 21:38:59 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[04-Oct-2021 21:38:59 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[06-Oct-2021 22:00:33 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[06-Oct-2021 22:00:33 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[07-Oct-2021 00:16:04 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[07-Oct-2021 00:16:04 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[09-Oct-2021 03:52:13 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[09-Oct-2021 03:52:13 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[10-Oct-2021 10:11:46 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19
+[10-Oct-2021 10:11:46 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[12-Oct-2021 02:14:58 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_models.php on line 19
+[12-Oct-2021 02:14:58 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php:19
+Stack trace:
+#0 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/api/model/get_manufactures.php on line 19

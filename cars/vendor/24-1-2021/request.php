@@ -471,7 +471,7 @@ if (isset($_SESSION["id"])) {
         <!-- end of modal -->
         <?php if ($row['lifting_procedure'] == 0) { ?>
         <!-- Button trigger modal -->
-        <a class="btn btn-danger" href="create_lifting_request.php?n=<?php echo $_GET['n'] ?>">انشاء محضر رفع</a>
+        <a class="btn btn-danger" href="create_lifting_request.php?r=<?php echo $_GET['n'] ?>">انشاء محضر رفع</a>
         <?php }else{ ?>
         <a class="btn btn-danger" href="view_lifting_request.php?n=<?php echo $row['lifting_procedure'] ?>&r=<?php echo $_GET['n'] ?>">عرض محضر الرفع</a>
         <?php } ?>
@@ -844,7 +844,7 @@ if (isset($_SESSION["id"])) {
                         // if($row3 = mysqli_fetch_assoc($msg)){
                         //   foreach ($msg as $row3){ 
                       ?>
-                  <option value="<?php// echo ($row3["id"]); ?>"><?php //echo ($row3["description"]); ?></option>
+                  <option value="<?php // echo ($row3["id"]); ?>"><?php //echo ($row3["description"]); ?></option>
                       <?php //}} ?>
                 </select>
                 <div>

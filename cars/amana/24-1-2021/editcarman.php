@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "2") {
 
@@ -109,10 +110,13 @@ if (isset($_SESSION["id"])) {
       <h2 style="text-align:<?php echo $expr['align']?>"><?php echo $expr['edit']?> <?php echo $expr['carman'] ?></h2>
       <form method="post">
           <?php
-            include_once "../database.php";
-            $user1=new Database();
-            $rs = $user1->GetData("select * from manufactures where id=".$_GET['n']);
-            if ($row = mysqli_fetch_assoc($rs)){
+            $sql = "CALL getCarManufactureByID(?)";
+            $itemID = $_GET['n'];
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(1,$itemID,PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch();
           ?>
           
           <div class="box box-info" style="text-align:center;">
@@ -127,18 +131,24 @@ if (isset($_SESSION["id"])) {
                   <button class="pull-<?php echo $expr['left']?> btn btn-default" name="btnupdate"><?php echo $expr['save'] ?> <i class="fa fa-arrow-circle-<?php echo $expr['left']?>"></i></button>
                 </div>
             </div>
-                 <?php
+                <?php
                     if(isset($_POST["btnupdate"]))
                     {
-                        include_once "../database.php";
-                          $user1=new Database();     
-                          $msg=$user1->RunDML("update manufactures set name='".$_POST['manf']. "', ar_name='".$_POST['armanf']."' where id=".$_GET["n"]);
-                        //  print_r($row['id']);
-                          if($msg=="ok"){
-                          echo "<meta http-equiv='refresh' content='0.1'>";
-                          }
-                      }    
-                  }
+                      $sql = "CALL updateCarManufacture(?,?,?)";
+                      $manf = $_POST['manf'];
+                      $armanf = $_POST['armanf'];
+                      $itemID = $_GET['n'];
+          
+                      $stmt = $conn->prepare($sql);
+                      $stmt->bindParam(1,$manf,PDO::PARAM_STR, 100);
+                      $stmt->bindParam(2,$armanf,PDO::PARAM_STR, 100);
+                      $stmt->bindParam(3,$itemID,PDO::PARAM_INT);
+                      $rs = $stmt->execute();
+                      if($rs){
+                      echo "<meta http-equiv='refresh' content='0.1'>";
+                      }
+                    }    
+                  
                   ?>
             </div>
             </form>

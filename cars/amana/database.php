@@ -22,8 +22,10 @@
             return $result;
         }
 
-
-
+        function mysqli_insert_id(){
+            $result = $this->conn->insert_id;
+            return $result;
+        }
 
     }
 //"localhost" ,"ilcruumy_cars" , "lcQeKA0SuFG" ,"ilcruumy_cars"

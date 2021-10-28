@@ -1,11 +1,14 @@
 <?php
 
-    include_once '../database.php';
-    $db = new Database();
+    include_once '../../database.php';
     $img = $_GET['n'];
     if(file_exists($img))
     {
-        $rs= $db->RunDML("delete from slider where userfile='".$img."' ");
+        $sql = "CALL deleteSliderImage(?)";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(1, $img, PDO::PARAM_LOB);
+        $stmt->execute();
         unlink($img);
         header('location:photolist.php');
     }else echo 'error';

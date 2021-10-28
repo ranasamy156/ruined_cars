@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "2") {
 
@@ -293,12 +294,13 @@ if (isset($_SESSION["id"])) {
                 <?php
                     if(isset($_POST["btnsave"]))
                     {
-                        include_once "../NewsClass.php";
-                        $new1=new News();
-                        
-                          $new1->setdescription($_POST["des"]);
-                          $msg=$new1->add();
-                          if($msg=="ok"){
+                        $des = $_POST["des"];
+                        $sql = "CALL insertNews(?)";
+    
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bindParam(1, $des, PDO::PARAM_STR, 100);
+                        $msg = $stmt->execute();
+                          if($msg){
                             echo("<div class='alert alert-success'>".$expr['newssuccess']." </div>");
                           }
                           else

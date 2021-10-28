@@ -720,7 +720,7 @@ input required[type=number] {
               require_once '../database.php';
               $database = new Database();
 
-              $save = $database->RunDML("insert into lifting_procedures values (Default, '".$_GET['n']."', '".$_POST['structure_top']."',
+              $save = $database->RunDML("insert into lifting_procedures values (Default, '".$_GET['r']."', '".$_POST['structure_top']."',
               '".$_POST['structure_fenders']."', '".$_POST['structure_engine_hood']."', '".$_POST['front_doors']."', '".$_POST['back_doors']."',
               '".$_POST['front_doors_no']."', '".$_POST['back_doors_no']."','".$_POST['front_lights']."', '".$_POST['back_lights']."',
               '".$_POST['front_lights_no']."', '".$_POST['back_lights_no']."',
@@ -733,30 +733,34 @@ input required[type=number] {
               '".$_POST['car_condition']."', '".$_POST['is_armed']."', default, default, default, default, default, '".$_POST['date']."', '".$_POST['type']."', '".$_POST['notes']."')");
 
               $last_id = $database->mysqli_insert_id();
-
+              $re = $database->RunDML("update request set lifting_procedure = ".$last_id." where id=".$_GET['r']);
               if($save == "ok"){
-
-                $dir ="../../images/";
+                $extensions = ['jpeg','jpg','gif','png','swf','tiff'];
+                
                 // Count # of uploaded files in array
                 $total = count($_FILES['upload']['name']);
-  
                 // Loop through each file
                 for( $i=0 ; $i < $total ; $i++ ) {
-  
-                  //Get the temp file path
-                  $tmpFilePath = $_FILES['upload']['tmp_name'][$i];
-  
-                  //Make sure we have a file path
-                  if ($tmpFilePath != ""){
-                    //Setup our new file path
-                    $newFilePath = $dir . $_FILES['upload']['name'][$i];
-  
-                    //Upload the file into the temp dir
-                    if(move_uploaded_file($tmpFilePath, $newFilePath)) {
-  
-                      $img = $database->RunDML("insert into lifting_images values (default, '".$newFilePath."', '".$last_id."')");
-  
+                  $ext = pathinfo($_FILES['upload']['name'][$i], PATHINFO_EXTENSION);
+                  if (in_array($ext, $extensions)) {
+                    $dir ="../../images/";
+                    //Get the temp file path
+                    $tmpFilePath = $_FILES['upload']['tmp_name'][$i];
+    
+                    //Make sure we have a file path
+                    if ($tmpFilePath != ""){
+                      //Setup our new file path
+                      $newFilePath = $dir . $_FILES['upload']['name'][$i];
+    
+                      //Upload the file into the temp dir
+                      if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+    
+                        $img = $database->RunDML("insert into lifting_images values (default, '".$newFilePath."', '".$last_id."')");
+    
+                      }
                     }
+                  }else{
+                    echo "<script> alert('الملف غير مدعوم. الملفات المدعومة هي pdf ، jpg ، jpeg ، gif ، swf ، tiff') </script>";
                   }
                 }
 
@@ -766,7 +770,7 @@ input required[type=number] {
                 $msg3 = $database->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$message."' , '0' , '4')");
                 $msg4 = $database->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$message."' , '0' , '2')");
                 echo("<script> alert('تم انشاء محضر الرفع بنجاح')</script>");
-                echo("<script> window.open('view_lifting_request.php?n=".$last_id."&r=".$_GET['n']."' , '_self') </script>");
+                echo("<script> window.open('view_lifting_request.php?n=".$last_id."&r=".$_GET['r']."' , '_self') </script>");
               }else{
                 echo "error is ".$save;
               }

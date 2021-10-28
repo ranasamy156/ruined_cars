@@ -11,6 +11,7 @@ $password = "lcQeKA0SuFG";
 $dbname="ilcruumy_cars";
  $conn = new mysqli($servername,$username, $password,$dbname);
 
+    echo "dasdadas";
 
 
 

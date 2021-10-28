@@ -311,12 +311,12 @@ if (isset($_GET["id"])) {
                 ?>
             <!-- <li>
               <a href="24-1-2021/pending.php">
-              <i class="fa fa-angle-<?php// echo $expr['left'] ?> pull-<?php //echo $expr['left'] ?>"></i><i class="fa fa-hourglass-half" aria-hidden="true"></i> <span><?php //echo $expr['pendingrequests'] ?></span> <span class="badge badge-danger"><?php //echo $pen; ?></span>
+              <i class="fa fa-angle-<?php // echo $expr['left'] ?> pull-<?php //echo $expr['left'] ?>"></i><i class="fa fa-hourglass-half" aria-hidden="true"></i> <span><?php //echo $expr['pendingrequests'] ?></span> <span class="badge badge-danger"><?php //echo $pen; ?></span>
               </a>
             </li>
             <li>
               <a href="24-1-2021/readytobeclosed.php">
-              <i class="fa fa-angle-<?php //echo $expr['left'] ?> pull-<?php //echo $expr['left'] ?>"></i><i class="fa fa-clone" aria-hidden="true"></i> <span><?php// echo $expr['readytobeclosed'] ?></span> <span class="badge badge-danger"><?php //echo $pen; ?></span>
+              <i class="fa fa-angle-<?php //echo $expr['left'] ?> pull-<?php //echo $expr['left'] ?>"></i><i class="fa fa-clone" aria-hidden="true"></i> <span><?php // echo $expr['readytobeclosed'] ?></span> <span class="badge badge-danger"><?php //echo $pen; ?></span>
               </a>
             </li> -->
             <li>

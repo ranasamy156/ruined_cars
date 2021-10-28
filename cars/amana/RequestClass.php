@@ -1,7 +1,6 @@
 <?php
     include_once 'database.php';
     include_once 'operation.php';
-
     class Requests extends Database implements Operation{
 
        var $id; var $model_id; var $plate_number; var $color; 
@@ -103,20 +102,16 @@
         }
 
         public function GetAll(){
-            $rs=parent::GetData("select rq.* ,st.description as status_name ,us.name from request rq ,statuses st, users us where rq.user_id = us.id and rq.status_id=st.id and rq.status_id not in (24,25,26) order by rq.id desc");
+            $rs=parent::GetData("CALL getRequests()");
             return $rs;
         }
         
         public function GetAllUsers(){ 
-            $rs=parent::GetData("select * from users");
+            $rs=parent::GetData("CALL getAllUsers()");
             return $rs;
         }
         public function GetReqById(){
-            $rs=parent::GetData("select  rq.* ,sts.description as sts_name,model.name as model_name ,model.en_name as model_arname ,man.name as man_name,man.ar_name as man_arname,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name 
-            
-            from request rq ,models as model, manufactures man,users us ,areas ar ,cities ct,statuses sts,states st 
-            
-            where rq.id='".$_GET["n"]."' and rq.model_id=model.id and model.manufacture_id=man.id	 and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id");
+            $rs= parent::GetData("select  rq.* ,sts.description as sts_name,model.name as model_name ,model.en_name as model_arname ,man.name as man_name,man.ar_name as man_arname,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name from request rq ,models as model, manufactures man,users us ,areas ar ,cities ct,statuses sts,states st where rq.id=".$_GET['n']." and rq.model_id=model.id and model.manufacture_id=man.id	 and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id") ;
             return $rs;
         }
         public function GetReqById2(){

@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "2") {
 
@@ -103,12 +104,13 @@ if (isset($_SESSION["id"])) {
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
       <?php
-          include_once '../database.php';
-          $db = new Database();
-          $rs = $db->GetData("select * from models where manufacture_id = " .$_GET['n']);
+          $sql = "CALL getCarModelsByManID(?)";
+          $itemID = $_GET['n'];
 
-          if ($row = mysqli_fetch_assoc($rs)) {
-              ?>
+          $stmt = $conn->prepare($sql);
+          $stmt->bindParam(1, $itemID, PDO::PARAM_INT);
+          $stmt->execute();
+        ?>
 
             <form method="post">
           <div class="adminpanel">
@@ -122,7 +124,7 @@ if (isset($_SESSION["id"])) {
               <th><?php echo $expr['edit'] ?></th>
               <th><?php echo $expr['remove'] ?></th>
             </thead>
-          <?php foreach($rs as $row){ ?>
+          <?php foreach($stmt as $row){ ?>
             <tbody>
               <td> <?php echo ($row["name"]); ?> </td>
               <td> <?php echo ($row["en_name"]); ?> </td>
@@ -133,16 +135,7 @@ if (isset($_SESSION["id"])) {
             <?php
                       }
                         ?>
-              </table>
-              <?php
-              
-            }else{ ?>
-            <tbody>        
-            <td><p style="font-size:large;float:<?php echo $expr['right'] ?>;"><?php echo $expr['nomodels'] ?></p></th>
-            </tbody>
-            <?php
-             }
-            ?>
+            </table>
             </form>
 					
           </table>

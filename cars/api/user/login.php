@@ -12,7 +12,7 @@ $conn->set_charset("utf8");
 
     $table = Tables::$USERS;
     $sql = "SELECT us.*, t.type as type_name FROM $table us ,users_types t WHERE user_name='$user_name' and password ='$password' and us.type_id = t.id";
-
+   
     $result = $conn->query($sql);
 
 

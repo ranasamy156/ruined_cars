@@ -7,29 +7,26 @@ require_once '../../tables.php';
 
 
 function uploadRequestImages($files,$request_id)
-{
-    $myfiles=array();
-    array_push($myfiles,$files);
-    //$_FILES['media']
-     $total = count($myfiles);
-    
+{     
+   
+
+     $total = count($files);
     // // Loop through each file
     for ($i = 0; $i < $total; $i++) {
-
-        $tmpFilePath = $myfiles[$i]['tmp_name'];
+        $tmpFilePath = $files[$i]['tmp_name'];
       //  echo "Temp:".$tmpFilePath;
      //Make sure we have a file path
      if ($tmpFilePath != "") {
          //Setup our new file path
-         $newFilePath = "../../images/" . $myfiles[$i]['name'];
-       //  echo "Path: ".$newFilePath;
-
+         $newFilePath = "../../images/" . $files[$i]['name'];
+     
          //Upload the file into the temp dir
          if (move_uploaded_file($tmpFilePath, $newFilePath)) {
-             
+           
              insertImagePath($newFilePath,$request_id);
              //Handle other code here
 
+         }else{
          }
      }
     }
@@ -47,10 +44,10 @@ function insertImagePath($path,$request_id)
     
     if ($conn->query($sql) === TRUE) {
         $last_id = $conn->insert_id;
-        echo json_encode([
-            "success" => 1,
-            "request_id" => $last_id
-        ]);
+        // echo json_encode([
+        //     "success" => 1,
+        //     "request_id" => $last_id
+        // ]);
     } else {
        // echo "Warinig:".error_reporting(E_ALL);
 

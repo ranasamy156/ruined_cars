@@ -22,7 +22,7 @@
 
 
         public function setid($id){
-           $this->id=$id;
+            $this->id=$id;
         }
         public function setdescription($description){
             $this->description=$description;
@@ -33,14 +33,14 @@
 
 
 
-       public function add(){
+        public function add(){
             $m=parent::RunDML("insert into procedures values (Default, '".$this->getdescription()."','".$_SESSION["type_id"]."')");
 
             return $m;
         }
 
         public function delete(){
-            $m=parent::RunDML("delete from procedures where id='".$_GET["n"]."' ");
+            $m=parent::RunDML("delete from procedures where id='".$_GET["n"]."'");
             
         }
 

@@ -1,5 +1,6 @@
 <?php
-header("Content-Type: JSON");
+header('Content-type: application/json; charset=UTF-8');
+
   include_once '../database.php';
   $db = new Database();
 

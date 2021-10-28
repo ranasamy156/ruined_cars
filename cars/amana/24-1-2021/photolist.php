@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "2") {
 ?>
@@ -109,7 +110,7 @@ if (isset($_SESSION["id"])) {
         }
         .fa-search{
       color:white;
-    }
+      }
 
         .next {
           margin-right: 185px;
@@ -306,9 +307,12 @@ if (isset($_SESSION["id"])) {
 
               <!-- Full-width images with number and caption text -->
                 <?php
-                  $dir_name = "../../images/";
-                  $images = glob($dir_name."*");
-                  foreach($images as $image) {
+                    $sql = "CALL getSliderImages()";        
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute();
+                    
+                    foreach($stmt as $row){
+                    $image = $row['userfile'];
                 ?>
               <div class="mySlides">
                 <img src="<?php echo $image; ?>" style="height: 300px;width:100%;">
@@ -319,7 +323,7 @@ if (isset($_SESSION["id"])) {
                 </div>
               </li>
               </ol>
-              <a href="test.php?n=<?php echo $image?>" class="btn btn-danger" name="remove"><?php echo $expr['remove'] ?> </a>
+              <a href="test.php?n=<?php echo $image ?>" class="btn btn-danger" name="remove"><?php echo $expr['remove'] ?> </a>
               </div>
               <!-- Next and previous buttons -->
               <a class="next" onclick="plusSlides(1)">&#10095;</a>
@@ -366,20 +370,24 @@ if (isset($_SESSION["id"])) {
                       dots[slideIndex-1].className += " active";
                     }
                 </script>
-                
+                <?php if($_SESSION['permission_des'] == "admin"){ ?>
                 <div id="photo">
                 
             <div style="text-align:center;margin:50px;width:100%;color: #000;margin: 30px auto 0;padding: 50px;text-align: left;font-size: 14px;">
-            <form  method="post" enctype="multipart/form-data">
-            <div class="form-group row" style="text-align:center;margin:auto;">
-            <h2><?php echo $expr['photoupload'] ?>:</h2>
-              <input class="form-control" type="file" name="userfile" id="userfile" style="margin-right:auto;" >
-              <input class="form-control" type="submit" value="<?php echo $expr['photoupload'] ?>" name="submit" style="width: 110px;float:<?php echo $expr['left'] ?>;">
-              </div>
-            </form>
+              <form  method="post" enctype="multipart/form-data">
+              <div class="form-group row" style="text-align:center;margin:auto;">
+              <h2><?php echo $expr['photoupload'] ?>:</h2>
+                <input class="form-control" type="file" name="userfile" id="userfile" style="margin-right:auto;" >
+                <input class="form-control" type="submit" value="<?php echo $expr['photoupload'] ?>" name="submit" style="width: 110px;float:<?php echo $expr['left'] ?>;">
+                </div>
+              </form>
                 </div>
             <?php
                 if(isset($_POST['submit'])){
+                  $extensions = ['jpeg','jpg','gif','png','swf','tiff'];
+                  $ext = pathinfo($_FILES['userfile']['name'], PATHINFO_EXTENSION);
+                  
+                  if (in_array($ext, $extensions)) {
                     $dir ="../../images/";
                     $image=$_FILES['userfile']['name'];
                     $temp_name=$_FILES['userfile']['tmp_name'];
@@ -388,27 +396,32 @@ if (isset($_SESSION["id"])) {
                     
                     $img= basename($_FILES['userfile']['name']);
                     if($image!=""){
-                    $fdir=$dir.$img;
-                    move_uploaded_file($temp_name , $fdir);
+                      $fdir=$dir.$img;
+                      move_uploaded_file($temp_name , $fdir);
                     }
-                    include_once '../database.php';
-                    $db3 = new database();
-                    $rs2 = $db3->RunDML("insert into slider values (Default, '".$fdir."')");
-                    if($rs2=="ok"){
-                      echo("<script> window.open('photolist.php' , '_self') </script>");
+                    $sql = "CALL insertSliderImage(?)";
+
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(1, $fdir, PDO::PARAM_LOB);
+                    $stmt->execute();
+                    echo "<script> alert('تم الرفع بنجاح') </script>";
+                    echo "<meta http-equiv='refresh' content='0.1'>";
+                  }else{
+                    echo "<script> alert('الملف غير مدعوم. الملفات المدعومة هي pdf ، jpg ، jpeg ، gif ، swf ، tiff') </script>";
+                  }
               }
-                    else{
-                      echo("<div class='alert alert-danger'> Error is ".$rs2."</div>");	
-                }
-                    }
 
                 
             ?>
         </div>
 </div>
+  <?php }else{ ?>
+  <div style="text-align: right;">
+          <h4>لا يوجد صلاحية لرفع صورة</h4>
+  <?php } ?>
 </form>
-            </div>
-          </div>
+</div>
+</div>
       
         <!-- Content Header (Page header) -->
 

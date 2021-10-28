@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "2") {
 ?>
@@ -135,37 +136,26 @@ if (isset($_SESSION["id"])) {
                   </tr>
                 </thead>
                 <?php
-                include_once '../Procedures.php';
-                $req1 = new Procedures();
-                $rs = $req1->GetAll();
-                
-                if ($row = mysqli_fetch_assoc($rs)) {
-                 
-                      foreach ($rs as $row){
-                        ?>
-                    <tbody>
-                      <tr>
-                     
-                        <th scope="row"><?php echo ($row["description"]); ?></th>
-                        <td><a href="delpro.php?n=<?php echo ($row["id"]); ?>"><?php echo $expr['remove']; ?></a></td>
-                      </tr>
-                    </tbody>
-                    <?php
-                      }
-                        ?>
-              <?php
+                $typeID = $_SESSION['type_id'];
+                $sql = "CALL getProcedures(?)";
+            
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(1, $typeID, PDO::PARAM_INT);
+                $stmt->execute();
+                foreach ($stmt as $row){
+                  ?>
+              <tbody>
+                <tr>
               
-            }else{ ?>
-            <tbody>
-                      <tr>
-                        <th scope="row"><p><?php echo $expr['noprocedures']; ?></p></th>
-                      </tr>
-                    </tbody>
-            <?php
-             }
-            ?>
-                    </table>
-                  </div>
+                  <th scope="row"><?php echo ($row["description"]); ?></th>
+                  <td><a href="delpro.php?n=<?php echo ($row["id"]); ?>"><?php echo $expr['remove']; ?></a></td>
+                </tr>
+              </tbody>
+              <?php
+                }
+                  ?>
+              </table>
+            </div>
         <!-- Content Header (Page header) -->
 
     <!-- jQuery 2.1.4 -->

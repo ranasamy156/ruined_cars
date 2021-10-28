@@ -1,6 +1,7 @@
 <?php
 include 'lang.php';
 include_once '../../hijri.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "2") {
 ?>
@@ -108,11 +109,10 @@ if (isset($_SESSION["id"])) {
         <section class="content">
         <div class="row">
         <?php
-          include_once '../database.php';
-          $req1 = new Database();
-          $rs2 = $req1->GetData("select * from num_accept where id = 1");
-          
-          $row2 = mysqli_fetch_assoc($rs2)
+          $sql = "CALL getNumberOfAccept()";
+          $stmt = $conn->prepare($sql);
+          $stmt->execute();
+          $row2 = $stmt->fetch();
         ?>
 
           <div class="row">
@@ -131,12 +131,12 @@ if (isset($_SESSION["id"])) {
                   </tr>
                 </thead>
                 <?php
-                include_once '../database.php';
-                $req1 = new Database();
-                $rs = $req1->GetData("select rq.* ,st.description as status_name ,us.name from request rq ,statuses st, users us where rq.user_id = us.id and rq.status_id=st.id and rq.direct = 1 order by rq.id desc");
+                $sql = "CALL getDirectRequests()";
+                $stmt = $conn->prepare($sql);
+                $rs = $stmt->execute();
                 
-                if ($row = mysqli_fetch_assoc($rs)) {
-                  foreach ($rs as $row) {
+                if ($rs == 1) {
+                  foreach ($stmt as $row) {
                     $date = (new hijri\datetime($row['created_at'], NULL,"ar" ))->format("D _j _F _Y هـ");
 
                 ?>

@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["permission_des"] == 'admin' && $_SESSION["type_id"] == "2") {
 ?>
@@ -136,22 +137,30 @@ if (isset($_SESSION["id"])) {
                 // $p="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/";
                 // if(preg_match($p,$_POST["password"]))
                 // {
-                  include_once "../users.php";
-                  $user1=new Users();
+
                   if($_POST["password"] == $_POST["confirm"])
                   {
-                    $user1->setname($_POST["name"]);
-                    $user1->setphone($_POST["phone"]);
-                    $user1->setusername($_POST["username"]);
-                    $user1->setpassword($_POST["password"]);
+                    $name = $_POST["name"];
+                    $phone = $_POST["phone"];
+                    $userName = $_POST["username"];
+                    $pass = $_POST["password"];
+                    $typeID = $_SESSION['type_id'];
+                    $sql = "CALL insertUsers(? , ? , ? , ? , ?)";
 
-                    $msg=$user1->add();
-                    if($msg=="ok")
-                    echo("<div class='alert alert-success'>" .$expr['addsuccess']. "</div>");	
-                    else if (strpos($msg,'user_name'))
-                    echo("<div class='alert alert-warning'>" .$expr['usernamemessage']. "</div>");	
-                    else
-                      echo("<div class='alert alert-danger'> Error is".$msg."</div>");	
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(1, $name, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(2, $phone, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(3, $userName, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(4, $pass, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(5, $typeID, PDO::PARAM_INT);
+                    $rs = $stmt->execute();
+                    if($rs){
+
+                      echo("<div class='alert alert-success'>" .$expr['addsuccess']. "</div>");	
+                    }else{
+                      echo("<div class='alert alert-danger'>اسم المستخدم او رقم الجوال تم استخدامهم سابقا</div>");
+                      
+                    }
                   }else {
                     echo("<div class='alert alert-danger'>" .$expr['confirmpassmessage']. "</div>");
 

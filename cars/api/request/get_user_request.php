@@ -8,7 +8,7 @@ $user_id = $_POST['user_id'];
 $conn->set_charset("utf8");
 
 $table = Tables::$REQUESTS;
-$sql = "SELECT rq.* , st.description as status_name FROM $table rq ,status st WHERE rq.user_id=$user_id and rq.status_id = st.id ORDER BY  id DESC";
+$sql = "SELECT rq.* , st.description as status_name FROM $table rq ,statuses st WHERE rq.user_id=$user_id and rq.status_id = st.id ORDER BY  id DESC";
 $result = $conn->query($sql);
 
 $jsonArray = array();
@@ -30,7 +30,8 @@ while ($row = $result->fetch_assoc()) {
             "status_name"=>$row['status_name'],
             "en_plate_number"=>$row['en_platenum'],
             "plate_color"=>$row['plate_color'],
-            "chassis"=>$row['chassis']
+            "chassis"=>$row['chassis'],
+            "reason"=>$row['reason']
            
       
         );

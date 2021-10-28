@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "2") {
 ?>
@@ -131,41 +132,26 @@ if (isset($_SESSION["id"])) {
                 <thead>
                   <tr>
                   <th scope="col"><?php echo $expr['status']; ?></th>
-                  <th scope="col"><?php echo $expr['usname']; ?></th>
                     <th scope="col"><?php echo $expr['remove']; ?></th>
                   </tr>
                 </thead>
                 <?php
-                include_once '../Status.php';
-                $req1 = new Status();
-                $rs = $req1->GetAll();
+                $sql = "CALL getStatuses()";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
                 
-                if ($row = mysqli_fetch_assoc($rs)) {
-                 
-                      foreach ($rs as $row){
+                      foreach ($stmt as $row){
                         ?>
                     <tbody>
                       <tr>
-                     
+                    
                         <th scope="row"><?php echo ($row["description"]); ?></th>
-                        <td scope="row"><?php echo ($row["name"]); ?></td>
                         <td><a href=""><?php echo $expr['remove']; ?></a></td>
                       </tr>
                     </tbody>
                     <?php
                       }
                         ?>
-              <?php
-              
-            }else{ ?>
-            <tbody>
-                      <tr>
-                        <th scope="row"><p><?php echo $expr['nostatus']; ?></p></th>
-                      </tr>
-                    </tbody>
-            <?php
-             }
-            ?>
        </table>
                   </div>
         <!-- Content Header (Page header) -->

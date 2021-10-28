@@ -116,3 +116,69 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in /home/alsaifit/public_html/cars/investigation/index.php on line 253
+[13-Jun-2021 10:22:48 America/Boise] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 7
+[13-Jun-2021 10:22:48 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function set_charset() on bool in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php:8
+Stack trace:
+#0 /home3/ilcruumy/public_html/alsaifit/cars/investigation/index.php(7): Database->__construct()
+#1 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 8
+[13-Jun-2021 10:22:53 America/Boise] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 7
+[13-Jun-2021 10:22:53 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function set_charset() on bool in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php:8
+Stack trace:
+#0 /home3/ilcruumy/public_html/alsaifit/cars/investigation/index.php(7): Database->__construct()
+#1 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 8
+[13-Jun-2021 10:23:04 America/Boise] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 7
+[13-Jun-2021 10:23:04 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function set_charset() on bool in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php:8
+Stack trace:
+#0 /home3/ilcruumy/public_html/alsaifit/cars/investigation/index.php(7): Database->__construct()
+#1 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 8
+[13-Jun-2021 10:23:06 America/Boise] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 7
+[13-Jun-2021 10:23:06 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function set_charset() on bool in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php:8
+Stack trace:
+#0 /home3/ilcruumy/public_html/alsaifit/cars/investigation/index.php(7): Database->__construct()
+#1 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 8
+[13-Jun-2021 10:23:23 America/Boise] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 7
+[13-Jun-2021 10:23:23 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function set_charset() on bool in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php:8
+Stack trace:
+#0 /home3/ilcruumy/public_html/alsaifit/cars/investigation/index.php(7): Database->__construct()
+#1 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 8
+[13-Jun-2021 10:25:35 America/Boise] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 7
+[13-Jun-2021 10:25:35 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function set_charset() on bool in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php:8
+Stack trace:
+#0 /home3/ilcruumy/public_html/alsaifit/cars/investigation/index.php(7): Database->__construct()
+#1 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 8
+[13-Jun-2021 13:22:05 America/Boise] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 7
+[13-Jun-2021 13:22:05 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function set_charset() on bool in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php:8
+Stack trace:
+#0 /home3/ilcruumy/public_html/alsaifit/cars/investigation/index.php(7): Database->__construct()
+#1 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 8
+[13-Jun-2021 13:22:09 America/Boise] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 7
+[13-Jun-2021 13:22:09 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function set_charset() on bool in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php:8
+Stack trace:
+#0 /home3/ilcruumy/public_html/alsaifit/cars/investigation/index.php(7): Database->__construct()
+#1 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 8
+[13-Jun-2021 13:22:10 America/Boise] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 7
+[13-Jun-2021 13:22:10 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function set_charset() on bool in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php:8
+Stack trace:
+#0 /home3/ilcruumy/public_html/alsaifit/cars/investigation/index.php(7): Database->__construct()
+#1 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 8
+[13-Jun-2021 13:22:11 America/Boise] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 7
+[13-Jun-2021 13:22:11 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function set_charset() on bool in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php:8
+Stack trace:
+#0 /home3/ilcruumy/public_html/alsaifit/cars/investigation/index.php(7): Database->__construct()
+#1 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 8
+[13-Jun-2021 13:24:45 America/Boise] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 7
+[13-Jun-2021 13:24:45 America/Boise] PHP Fatal error:  Uncaught Error: Call to a member function set_charset() on bool in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php:8
+Stack trace:
+#0 /home3/ilcruumy/public_html/alsaifit/cars/investigation/index.php(7): Database->__construct()
+#1 {main}
+  thrown in /home3/ilcruumy/public_html/alsaifit/cars/investigation/database.php on line 8

@@ -19,7 +19,7 @@
 
 
         public function setid($id){
-           $this->id=$id;
+            $this->id=$id;
         }
         public function setdescription($description){
             $this->description=$description;
@@ -27,7 +27,7 @@
 
 
 
-       public function add(){
+        public function add(){
             $m=parent::RunDML("insert into news values (Default, '".$this->getdescription()."')");
 
             return $m;

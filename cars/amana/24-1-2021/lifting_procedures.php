@@ -2,7 +2,7 @@
 
 include 'lang.php';
 include_once '../../hijri.php';
-
+include '../../database.php';
 if (isset($_SESSION["id"])) {
 
   if($_SESSION["type_id"] == "2") {
@@ -108,10 +108,10 @@ if (isset($_SESSION["id"])) {
         <section class="content">
         <div class="row">
         <?php
-          include_once '../database.php';
-          $req1 = new Database();
-          $rs2 = $req1->GetData("select * from num_accept where id = 1");
-          $row2 = mysqli_fetch_assoc($rs2)
+          $sql = "CALL getNumberOfAccept()";
+          $stmt = $conn->prepare($sql);
+          $stmt->execute();
+          $row2 = $stmt->fetch();
         ?>
           <div class="row">
             <div class="col-md-12 m-auto">
@@ -127,11 +127,12 @@ if (isset($_SESSION["id"])) {
                   </tr>
                 </thead>
                 <?php
-                include_once '../database.php';
-                $req1 = new Database();
-                $rs = $req1->GetData("select lift.* ,rq.id as request_id, rq.plate_number as plate_number from lifting_procedures lift, request rq where rq.id = lift.request_id order by lift.id desc");
-                if ($row = mysqli_fetch_assoc($rs)) {
-                  foreach ($rs as $row) {
+                $sql = "CALL getLiftingProcedures()";
+                $stmt = $conn->prepare($sql);
+                $rs = $stmt->execute();
+                
+                if ($rs == 1) {
+                  foreach ($stmt as $row) {
                     $date = (new hijri\datetime($row['created_at'], NULL,"ar" ))->format("D _j _F _Y هـ");
 
                 ?>

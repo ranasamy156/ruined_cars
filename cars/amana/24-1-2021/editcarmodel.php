@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "2") {
 
@@ -109,22 +110,18 @@ if (isset($_SESSION["id"])) {
       <h2 style="text-align:<?php echo $expr['align']?>"><?php echo $expr['edit']?> <?php echo $expr['carmodel'] ?></h2>
       <form method="post">
       <?php
-            include_once '../database.php';
-            $db4 = new database();
-            
-            $rs4 = $db4->GetData("select  mo.* ,man.name as man_name from models as mo, manufactures man where mo.id='".$_GET["n"]."' and mo.manufacture_id=man.id");
-                if($row2 = mysqli_fetch_assoc($rs4)){
+            $sql = "CALL getCarModelByID(?)";
+            $itemID = $_GET['n'];
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(1,$itemID,PDO::PARAM_INT);
+            $stmt->execute();
+            $row2 = $stmt->fetch();
       ?>
       <div>
       <div style="margin-top:65px;">
-      <select name="model" style="float:<?php echo $expr['right'] ?>;" disabled>
-        <?php
-        foreach($rs4 as $row2){
-          ?>
+      <select name="model" style="float:<?php echo $expr['right'] ?>;" disabled>  
         <option value="<?php echo($row2['manufacture_id']); ?>" ><?php echo($row2['man_name']); ?></option>
-        <?php
-        }
-        ?>
       </select>
       </div>
       <div>
@@ -141,14 +138,21 @@ if (isset($_SESSION["id"])) {
             <?php
                     if(isset($_POST["btnupdate"]))
                     {
-                        include_once "../database.php";
-                          $user1=new Database();     
-                          $msg=$user1->RunDML("update models set name='".$_POST['mod']. "', en_name='".$_POST['enmod']."' where id=".$_GET['n']);
-                          if($msg=="ok"){
-                            echo "<meta http-equiv='refresh' content='0.1'>";
-                          }
-                      }    
-        }
+                      $sql = "CALL updateCarModel(?,?,?)";
+                      $model = $_POST['mod'];
+                      $enmod = $_POST['enmod'];
+                      $itemID = $_GET['n'];
+          
+                      $stmt = $conn->prepare($sql);
+                      $stmt->bindParam(1,$model,PDO::PARAM_STR, 100);
+                      $stmt->bindParam(2,$enmod,PDO::PARAM_STR, 100);
+                      $stmt->bindParam(3,$itemID,PDO::PARAM_INT);
+                      $rs = $stmt->execute();
+                      if($rs){
+                      echo "<meta http-equiv='refresh' content='0.1'>";
+                      }
+                    }    
+        
             ?>
             </div>
             </form>

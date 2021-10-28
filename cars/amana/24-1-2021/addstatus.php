@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "2") {
 
@@ -126,12 +127,15 @@ if (isset($_SESSION["id"])) {
                 <?php
                     if(isset($_POST["btnsave"]))
                     {
-                        include_once "../Status.php";
-                        $req1=new Status();
-                        
-                          $req1->setdescription($_POST["des"]);
-                          $msg=$req1->add();
-                          if($msg=="ok"){
+                      $desc = $_POST["des"];
+                      $userID = $_SESSION['id'];
+
+                      $sql = "CALL insertStatuses(? , ?)";
+                      $stmt = $conn->prepare($sql);
+                      $stmt->bindParam(1, $desc, PDO::PARAM_STR, 100);
+                      $stmt->bindParam(2, $userID, PDO::PARAM_INT);
+                      $msg = $stmt->execute();
+                          if($msg){
                            // echo("<script> window.open('reqlist.php' , '_self') </script>");
                             echo("<div class='alert alert-success'>".$expr['statussuccess']."</div>");
                           }
