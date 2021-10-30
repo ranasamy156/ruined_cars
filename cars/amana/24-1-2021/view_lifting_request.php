@@ -13,11 +13,11 @@ if (isset($_SESSION["id"])) {
     $row = $stmt->fetch();
 
     $mapQuery = "CALL getMapById(?)";
-    $stmt1 = $conn->prepare($mapQuery);
-    $stmt1->bindParam(1, $reqID, PDO::PARAM_INT);
-    $stmt1->execute();
-    $rowmap = $stmt1->fetch();
-
+    $stmt = $conn->prepare($mapQuery);
+    $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+    $stmt->execute();
+    $rowmap = $stmt->fetch();
+    
     
     if($rowmap['model_id'] == 0 && $rowmap['man_id'] == 0){
       $reqQuery = "CALL getReqById2(?)";
@@ -32,11 +32,11 @@ if (isset($_SESSION["id"])) {
       $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
       $stmt->execute();
       $row2 = $stmt->fetch();
-      print_r($row2);
+      // print("<pre>".print_r($row2,true)."</pre>");
+      // exit;
     }catch(PDOException $e){
-      print("Exception");
+      print("Exception".$e->getMessage());
     };
-    exit;
 ?>
   <!DOCTYPE html>
   <html>
@@ -240,7 +240,7 @@ $(document).ready(function(){
       </div>
       </div>
         <div class="row">
-          <div class="col-lg-12">            
+          <div class="col-lg-12">
             <a target="_blank" href="print_lifting_procedure.php?n=<?php echo $_GET['n'] ?>&r=<?php echo $_GET['r'] ?>" class="btn btn-primary" style="float:left;">طباعة</a>
             <h1 style="font-family:'Amiri'; text-align:center">محضر رفع للطلب رقم <?php echo $_GET['r'] ?></h1>
           </div>
