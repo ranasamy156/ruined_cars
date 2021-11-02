@@ -2,7 +2,7 @@
 include 'lang.php';
 include "../hijri/Hijri_GregorianConvert.php";
 $DateConv=new Hijri_GregorianConvert;
-
+include '../database.php';
 if (isset($_SESSION["id"])) {
     if($_SESSION["type_id"] == "4") {
 ?>
@@ -14,6 +14,9 @@ if (isset($_SESSION["id"])) {
     <title><?php echo $expr['mainmenu'] ?></title>
     <link href="../hijri/css/bootstrap.rtl.css" rel="stylesheet" />
     <link href="../hijri/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Font Awesome -->
@@ -21,40 +24,38 @@ if (isset($_SESSION["id"])) {
     <!-- Ionicons 2.0.0 -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- iCheck -->
-    <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
+    <link rel="stylesheet" href="../assets/plugins/iCheck/flat/blue.css">
     <!-- Morris chart -->
-    <link rel="stylesheet" href="plugins/morris/morris.css">
+    <link rel="stylesheet" href="../assets/plugins/morris/morris.css">
     <!-- jvectormap -->
-    <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
+    <link rel="stylesheet" href="../assets/plugins/jvectormap/jquery-jvectormap-1.2.2.css">
     <!-- Daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
+    <link rel="stylesheet" href="../assets/plugins/daterangepicker/daterangepicker-bs3.css">
     <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  
     <?php if($expr['direction'] == 'rtl'){ ?>
       <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
       <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="dist/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="dist/css/rtl.css">
+      <link rel="stylesheet" href="../assets/dist/css/bootstrap-rtl.min.css">
+      <link rel="stylesheet" href="../assets/dist/css/rtl.css">
       <!-- Theme style -->
-      <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+      <link rel="stylesheet" href="../assets/dist/css/AdminLTE.min.css">
       <!-- AdminLTE Skins. Choose a skin from the css/skins
           folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+      <link rel="stylesheet" href="../assets/dist/css/skins/_all-skins.min.css">
     <?php }else{ ?>
        <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
       <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="disten/css/rtl.css">
+      <link rel="stylesheet" href="../assets/disten/css/bootstrap-rtl.min.css">
+      <link rel="stylesheet" href="../assets/disten/css/rtl.css">
       <!-- Theme style -->
-      <link rel="stylesheet" href="disten/css/AdminLTE.min.css">
+      <link rel="stylesheet" href="../assets/disten/css/AdminLTE.min.css">
       <!-- AdminLTE Skins. Choose a skin from the css/skins
           folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
+      <link rel="stylesheet" href="../assets/disten/css/skins/_all-skins.min.css">
     <?php
      }?>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -135,12 +136,13 @@ if(isset($_POST['search'])){
           $result=$_POST['date1'];
           $result2=$_POST['date2'];
       }
-      
-  include "database.php";
-  $db = new Database();
-  $search = $db->GetData("select rq.* ,sts.description as sts_name, ct.name as ct_name, ar.name as ar_name, st.name as st_name from request rq ,users us ,areas ar ,cities ct,statuses sts,states st where cast(rq.created_at as date) between '".$result."' and '".$result2."' and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id ORDER BY rq.id desc");
+
+  $sql = "CALL searchReportByTime(? , ?)";
+  $stmt = $conn->prepare($sql);
+  $stmt->bindParam(1, $result, PDO::PARAM_STR, 100);
+  $stmt->bindParam(2, $result2, PDO::PARAM_STR, 100);
+  $stmt->execute();
   
-  if ($row = mysqli_fetch_assoc($search)) {
 ?>
         <div class="table-responsive print-container">
         <table class="table table-bordered">
@@ -154,7 +156,7 @@ if(isset($_POST['search'])){
             </thead>
             <tbody id="myTable">
             <?php
-                        foreach ($search as $row) {
+                        foreach ($stmt as $row) {
                         ?>
             <tr>
                 <th scope="row"><?php echo ($row["id"]); ?></th>
@@ -164,13 +166,7 @@ if(isset($_POST['search'])){
             </tr>
             <?php
                         }
-                        } else {
-                        ?>
-                        <tr>
-                                <th scope="row"><?php echo ($expr["norequests"]); ?></th>
-                            </tr>
-                            <?php
-                        } } ?>
+                        } ?>
             </tbody>
         </table>
                     </div>

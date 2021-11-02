@@ -2,13 +2,14 @@
 include 'lang.php';
 include_once '../hijri.php';
 include "../hijri/Hijri_GregorianConvert.php";
+include '../database.php';
 $DateConv=new Hijri_GregorianConvert;
 if (isset($_SESSION["id"])) {
     if($_SESSION["type_id"] == "1") {
-      require 'database.php';
-      $req1 = new Database();
-      $fetcharea = $req1->GetData("select DISTINCT a.*, rq.area_id from areas a, request rq where a.id = rq.area_id");
-      $rowarea = mysqli_fetch_assoc($fetcharea);
+      $mapQuery = "CALL getAreas()";
+      $stmt = $conn->prepare($mapQuery);
+      $stmt->execute();
+      
 ?>
   <!DOCTYPE html>
   <html>
@@ -24,42 +25,42 @@ if (isset($_SESSION["id"])) {
     <!-- Ionicons 2.0.0 -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- iCheck -->
-    <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
+    <link rel="stylesheet" href="../assets/plugins/iCheck/flat/blue.css">
     <!-- Morris chart -->
-    <link rel="stylesheet" href="plugins/morris/morris.css">
+    <link rel="stylesheet" href="../assets/plugins/morris/morris.css">
     <!-- jvectormap -->
-    <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
+    <link rel="stylesheet" href="../assets/plugins/jvectormap/jquery-jvectormap-1.2.2.css">
     <link href="../hijri/css/bootstrap.rtl.css" rel="stylesheet" />
     <link href="../hijri/css/bootstrap-datetimepicker.css" rel="stylesheet" />
     <!-- Daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
+    <link rel="stylesheet" href="../assets/plugins/daterangepicker/daterangepicker-bs3.css">
     <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <link rel="stylesheet" href="../assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <?php if($expr['direction'] == 'rtl'){ ?>
       <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="dist/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="dist/css/rtl.css">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+      <!-- <link rel="stylesheet" href="../assets/dist/fonts/fonts-fa.css"> -->
+      <link rel="stylesheet" href="../assets/dist/css/bootstrap-rtl.min.css">
+      <link rel="stylesheet" href="../assets/dist/css/rtl.css">
       <!-- Theme style -->
-      <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+      <link rel="stylesheet" href="../assets/dist/css/AdminLTE.min.css">
       <!-- AdminLTE Skins. Choose a skin from the css/skins
           folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+      <link rel="stylesheet" href="../assets/dist/css/skins/_all-skins.min.css">
     <?php }else{ ?>
        <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="disten/css/rtl.css">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+      <!-- <link rel="stylesheet" href="../assets/dist/fonts/fonts-fa.css"> -->
+      <link rel="stylesheet" href="../assets/disten/css/bootstrap-rtl.min.css">
+      <link rel="stylesheet" href="../assets/disten/css/rtl.css">
       <!-- Theme style -->
-      <link rel="stylesheet" href="disten/css/AdminLTE.min.css">
+      <link rel="stylesheet" href="../assets/disten/css/AdminLTE.min.css">
       <!-- AdminLTE Skins. Choose a skin from the css/skins
           folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
+      <link rel="stylesheet" href="../assets/disten/css/skins/_all-skins.min.css">
     <?php
      }?>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -113,7 +114,7 @@ if (isset($_SESSION["id"])) {
     <div class="col-xs-2 print-container">
         <select name="area" id="areaselect" class="form-control">
             <option value="none" selected disabled>اختر الحي</option>
-            <?php foreach($fetcharea as $rowarea){ ?>
+            <?php foreach($stmt as $rowarea){ ?>
             <option value="<?php echo $rowarea['id'] ?>"><?php echo $rowarea['name'] ?></option>    
             <?php } ?>
         </select>
@@ -175,15 +176,17 @@ if (isset($_SESSION["id"])) {
             </thead>
             <tbody id="myTable">
             <?php
-              $rs = $req1->GetData("select  rq.* ,sts.description as status_name,model.name as model_name ,model.en_name as model_arname ,man.name as man_name,man.ar_name as man_arname,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name 
-            
-              from request rq ,models as model, manufactures man,users us ,areas ar ,cities ct,statuses sts,states st 
-              
-              where cast(rq.created_at as date) between '".$result."' and '".$result2."' and (rq.baladya like '%".$_POST["baladya"]."%' or rq.area_id ='".$_POST["area"]."') and rq.model_id=model.id and model.manufacture_id=man.id and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id");
+              $baladeya = $_POST['baladya'];
+              $areaID = $_POST['area'];
+              $sql = "CALL searchAreaReport(? , ? , ? ,?)";
+              $stmt = $conn->prepare($sql);
+              $stmt->bindParam(1, $result, PDO::PARAM_STR, 100);
+              $stmt->bindParam(2, $result2, PDO::PARAM_STR, 100);
+              $stmt->bindParam(3, $baladeya, PDO::PARAM_STR, 100);
+              $stmt->bindParam(4, $areaID, PDO::PARAM_INT);
+              $stmt->execute();
 
-
-              if ($row = mysqli_fetch_assoc($rs)) {
-              foreach ($rs as $row) {
+              foreach ($stmt as $row) {
                 $date = (new hijri\datetime($row['created_at'], NULL,"ar" ))->format("D _j _F _Y هـ");
 
             ?>
@@ -201,13 +204,6 @@ if (isset($_SESSION["id"])) {
             </tr>
             <?php
                 }
-                } else {
-                ?>
-                <tr>
-                    <th scope="row"><?php echo ($expr["norequests"]); ?></th>
-                </tr>
-                    <?php
-                } 
             ?>
             </tbody>
         </table>

@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
     if($_SESSION["type_id"] == "2") {
 ?>
@@ -10,58 +11,9 @@ if (isset($_SESSION["id"])) {
     <meta charset="UTF-8">
     <title><?php echo $expr['mainmenu'] ?></title>
 
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <!-- Ionicons 2.0.0 -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- iCheck -->
-    <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
-    <!-- Morris chart -->
-    <link rel="stylesheet" href="plugins/morris/morris.css">
-    <!-- jvectormap -->
-    <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-    <!-- Date Picker -->
-    <link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
-    <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <?php if($expr['direction'] == 'rtl'){ ?>
-      <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="dist/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="dist/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
-    <?php }else{ ?>
-       <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="disten/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="disten/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
-    <?php
-     }?>
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <!-- CSS FILES --> 
+    <?php require 'layout.php'; ?>
+    <!-- CSS FILES --> 
     <script src="https://code.jquery.com/jquery-1.11.3.min.js" type="text/javascript"></script>
     <style>
       
@@ -109,11 +61,10 @@ if (isset($_SESSION["id"])) {
             </thead>
             <tbody id="myTable">
             <?php
-                include_once '../database.php';
-                $db1 = new database();
-                $rs = $db1->GetData("select * from manufactures");
-                if($row = mysqli_fetch_assoc($rs)){
-                    foreach($rs as $row){
+                $sql = "CALL getCarManufactures()";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                foreach($stmt as $row){
             ?>
             <tr>
                 <th><?php echo ($row["id"]); ?></th>
@@ -122,7 +73,6 @@ if (isset($_SESSION["id"])) {
             </tr>
             <?php
                         }
-                        } 
                         ?>
                         <tr>
             </tbody>

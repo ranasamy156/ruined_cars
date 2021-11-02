@@ -1,19 +1,20 @@
 <?php
 include 'lang.php';
+include '../../database.php';
+  $reqID = $_GET['n'];
   
   $coordinates = array();
   $latitudes = array();
   $longitudes = array();
-   include_once '../RequestClass.php';
-   $db = new Requests();
- $result = $db->GetMapById();
 
-  while ($row = mysqli_fetch_array($result)) {
-
-   $latitudes[] = $row['lat'];
-   $longitudes[] = $row['lng'];
-   $coordinates[] = 'new google.maps.LatLng(' . $row['lat'] .','. $row['lng'] .'),';
- }
+  $mapQuery = "CALL getMapById(?)";
+  $stmt = $conn->prepare($mapQuery);
+  $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+  $stmt->execute();
+  $rowmap = $stmt->fetch();    
+  $latitudes[] = $rowmap['lat'];
+  $longitudes[] = $rowmap['lng'];
+  $coordinates[] = 'new google.maps.LatLng(' . $rowmap['lat'] .','. $rowmap['lng'] .'),';
 
  //remove the comaa ',' from last coordinate
  $lastcount = count($coordinates)-1;
@@ -26,55 +27,9 @@ include 'lang.php';
   <head>
   <meta charset="UTF-8">
     <title><?php echo $expr['requestdetails'] ?></title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-   <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <!-- Ionicons 2.0.0 -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-   <!-- iCheck -->
-    <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
-    <!-- Morris chart -->
-    <link rel="stylesheet" href="plugins/morris/morris.css">
-    <!-- jvectormap -->
-    <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-    <!-- Date Picker -->
-    <link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
-    <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-    
-    <?php if($expr['direction'] == 'rtl'){ ?>
-      <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="dist/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="dist/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
-    <?php }else{ ?>
-       <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="disten/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="disten/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
-    <?php
-     }?>
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <!-- CSS FILES --> 
+    <?php require 'layout.php'; ?>
+    <!-- CSS FILES --> 
     <style>
      .icons {
         color: #AF121E;
@@ -317,13 +272,13 @@ include 'lang.php';
       include_once 'stepper.php';
       ?>
       <?php
-          include_once '../RequestClass.php';
-          $db = new Requests();
-        
+          $mapQuery = "CALL getReqById(?)";
+          $stmt = $conn->prepare($mapQuery);
+          $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+          $stmt->execute();
           $requests = [];
-          $rs = $db->GetReqById();
         
-          while($row = mysqli_fetch_array($rs)) {
+          foreach($stmt as $row) {
               $req = array();
               $req["id"] = $row['id'];
               $req["sts_name"] = $row['sts_name'];
@@ -462,23 +417,24 @@ include 'lang.php';
 
             <!-- Full-width images with number and caption text -->
             <?php
-            include_once '../RequestClass.php';
-            $req1 = new Requests();
-            $rs = $req1->GetReqImagesById();
-            $count = $rs->num_rows;
+            $sql = "CALL getReqImages(?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+            $stmt->execute();
+            $count = $stmt->rowCount();
 
-            if ($row = mysqli_fetch_assoc($rs)) {
-              foreach ($rs as $row) {
+            
+              foreach ($stmt as $rowphoto) {
 
             ?>
 
                 <div class="mySlides">
-                  <img src=<?php echo $row['path'] ?> style="height: 300px;width:100%;">
+                  <img src=<?php echo $rowphoto['path'] ?> style="height: 300px;width:100%;">
                 </div>
 
             <?php
               }
-            } 
+            
             ?>
 
             <!-- Next and previous buttons -->
@@ -539,19 +495,7 @@ include 'lang.php';
 
 
 
-    <!--remenber to put your google map key-->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-dFHYjTqEVLndbN2gdvXsx09jfJHmNc8&callback=initMap"></script>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
-    <script src="js/jquery-3.5.1.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
-  
-    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-      
-    </script>  
+      <?php require 'layoutjs.php'; ?>
   </form>
   </body>
 

@@ -2,6 +2,7 @@
 include 'lang.php';
 include_once '../hijri.php';
 include "../hijri/Hijri_GregorianConvert.php";
+include '../database.php';
 $DateConv=new Hijri_GregorianConvert;
 if (isset($_SESSION["id"])) {
     if($_SESSION["type_id"] == "1") {
@@ -22,42 +23,42 @@ if (isset($_SESSION["id"])) {
     <!-- Ionicons 2.0.0 -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- iCheck -->
-    <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
+    <link rel="stylesheet" href="../assets/plugins/iCheck/flat/blue.css">
     <!-- Morris chart -->
-    <link rel="stylesheet" href="plugins/morris/morris.css">
+    <link rel="stylesheet" href="../assets/plugins/morris/morris.css">
     <!-- jvectormap -->
-    <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
+    <link rel="stylesheet" href="../assets/plugins/jvectormap/jquery-jvectormap-1.2.2.css">
     <link href="../hijri/css/bootstrap.rtl.css" rel="stylesheet" />
     <link href="../hijri/css/bootstrap-datetimepicker.css" rel="stylesheet" />
     <!-- Daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
+    <link rel="stylesheet" href="../assets/plugins/daterangepicker/daterangepicker-bs3.css">
     <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <link rel="stylesheet" href="../assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/uxs/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <?php if($expr['direction'] == 'rtl'){ ?>
       <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="dist/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="dist/css/rtl.css">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+      <!-- <link rel="stylesheet" href="../assets/dist/fonts/fonts-fa.css"> -->
+      <link rel="stylesheet" href="../assets/dist/css/bootstrap-rtl.min.css">
+      <link rel="stylesheet" href="../assets/dist/css/rtl.css">
       <!-- Theme style -->
-      <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+      <link rel="stylesheet" href="../assets/dist/css/AdminLTE.min.css">
       <!-- AdminLTE Skins. Choose a skin from the css/skins
           folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+      <link rel="stylesheet" href="../assets/dist/css/skins/_all-skins.min.css">
     <?php }else{ ?>
        <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
       <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="disten/css/rtl.css">
+      <link rel="stylesheet" href="../assets/disten/css/bootstrap-rtl.min.css">
+      <link rel="stylesheet" href="../assets/disten/css/rtl.css">
       <!-- Theme style -->
-      <link rel="stylesheet" href="disten/css/AdminLTE.min.css">
+      <link rel="stylesheet" href="../assets/disten/css/AdminLTE.min.css">
       <!-- AdminLTE Skins. Choose a skin from the css/skins
           folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
+      <link rel="stylesheet" href="../assets/disten/css/skins/_all-skins.min.css">
     <?php
      }?>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -115,7 +116,7 @@ if (isset($_SESSION["id"])) {
       <button style="float:left;margin-left:15px;" onclick = "window.print()" class="print-container btn btn-danger"><i class="fa fa-print"></i></button>
   <form autocomplete="off" method="post">
   <div class="row">
-    <div class="col-xs-1 print-container">
+  <div class="col-xs-1 print-container">
       <label style="float:left;">من</label>
     </div>
     <div class="col-xs-3 print-container">
@@ -166,13 +167,19 @@ if (isset($_SESSION["id"])) {
             <tbody id="myTable">
             <?php
             if($_GET['n'] == 0){
-              $rs = $req1->GetData("select rq.* ,st.description as status_name ,model.name as model_name ,model.en_name as model_arname ,man.name as man_name,man.ar_name as man_arname,us.name from request rq ,statuses st, users us, models model, manufactures man where cast(rq.created_at as date) between '".$_GET['f']."' and '".$_GET['t']."' and rq.user_id = us.id and rq.model_id=model.id and model.manufacture_id=man.id and rq.status_id=st.id and rq.status_id not in (15,24,25,26,27,28) order by rq.id desc");
+              $sql = "CALL searchRequestReportse1(? , ?)";
+              $stmt = $conn->prepare($sql);
+              $stmt->bindParam(1, $_GET['f'], PDO::PARAM_STR, 100);
+              $stmt->bindParam(2, $_GET['t'], PDO::PARAM_STR, 100);
             }else{
-              $rs = $req1->GetData("select rq.* ,st.description as status_name ,model.name as model_name ,model.en_name as model_arname ,man.name as man_name,man.ar_name as man_arname,us.name from request rq ,statuses st, users us, models model, manufactures man  where cast(rq.created_at as date) between '".$_GET['f']."' and '".$_GET['t']."' and rq.user_id = us.id and rq.model_id=model.id and model.manufacture_id=man.id and rq.status_id=st.id and rq.status_id not in (15,24,25,26,27,28) and ready_to_close = ".$_GET['n']." order by rq.id desc");
+              $sql = "CALL searchRequestReportse2(? , ? , ?)";
+              $stmt = $conn->prepare($sql);
+              $stmt->bindParam(1, $_GET['f'], PDO::PARAM_STR, 100);
+              $stmt->bindParam(2, $_GET['t'], PDO::PARAM_STR, 100);
+              $stmt->bindParam(3, $_GET['n'], PDO::PARAM_INT);
             }
-              
-              if ($row = mysqli_fetch_assoc($rs)) {
-              foreach ($rs as $row) {
+              $stmt->execute();
+              foreach ($stmt as $row) {
                 $date = (new hijri\datetime($row['created_at'], NULL,"ar" ))->format("D _j _F _Y هـ");
 
             ?>
@@ -189,13 +196,6 @@ if (isset($_SESSION["id"])) {
             </tr>
             <?php
                 }
-                } else {
-                ?>
-                <tr>
-                        <th scope="row"><?php echo ($expr["norequests"]); ?></th>
-                    </tr>
-                    <?php
-                } 
             ?>
             </tbody>
         </table>

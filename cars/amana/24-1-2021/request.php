@@ -22,15 +22,14 @@ if (isset($_SESSION["id"])) {
    // $mysqli->query($query) or die('data selection for google map failed: ' . $mysqli->error);
 
     $mapQuery = "CALL getMapById(?)";
-    $stmt1 = $conn->prepare($mapQuery);
-    $stmt1->bindParam(1, $reqID, PDO::PARAM_INT);
-    $stmt1->execute();    
-  while ($rowmap = $stmt1->fetchAll()) {
-
-   $latitudes[] = $rowmap[0]['lat'];
-   $longitudes[] = $rowmap[0]['lng'];
-   $coordinates[] = 'new google.maps.LatLng(' . $rowmap[0]['lat'] .','. $rowmap[0]['lng'] .'),';
- }
+    $stmt = $conn->prepare($mapQuery);
+    $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+    $stmt->execute();
+    $rowmap = $stmt->fetch();    
+    $latitudes[] = $rowmap['lat'];
+    $longitudes[] = $rowmap['lng'];
+    $coordinates[] = 'new google.maps.LatLng(' . $rowmap['lat'] .','. $rowmap['lng'] .'),';
+    
 
  //remove the comaa ',' from last coordinate
  $lastcount = count($coordinates)-1;
@@ -43,55 +42,9 @@ if (isset($_SESSION["id"])) {
   <head>
   <meta charset="UTF-8">
     <title><?php echo $expr['requestdetails'] ?></title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-   <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <!-- Ionicons 2.0.0 -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-       <!-- iCheck -->
-    <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
-    <!-- Morris chart -->
-    <link rel="stylesheet" href="plugins/morris/morris.css">
-    <!-- jvectormap -->
-    <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-    <!-- Date Picker -->
-    <link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
-    <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-    <?php if($expr['direction'] == 'rtl'){ ?>
-      <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="dist/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="dist/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
-    <?php }else{ ?>
-       <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="disten/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="disten/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
-      
-    <?php
-     }?>
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <!-- CSS FILES --> 
+    <?php require 'layout.php'; ?>
+    <!-- CSS FILES --> 
     <style>
         .icons {
           color: #AF121E;
@@ -432,10 +385,10 @@ if (isset($_SESSION["id"])) {
       <div class="content-wrapper">
       <?php
           $mapQuery = "CALL getMapById(?)";
-          $stmt1 = $conn->prepare($mapQuery);
-          $stmt1->bindParam(1, $reqID, PDO::PARAM_INT);
-          $stmt1->execute();
-          $rowmap = $stmt1->fetchAll();
+          $stmt = $conn->prepare($mapQuery);
+          $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+          $stmt->execute();
+          $rowmap = $stmt->fetchAll();
           
           if($rowmap[0]['model_id'] == 0 && $rowmap[0]['man_id'] == 0){
             $reqQuery = "CALL getReqById2(?)";
@@ -490,9 +443,11 @@ if (isset($_SESSION["id"])) {
         </div>
         <?php
         if(isset($_POST['changest'])){
-          include_once '../database.php';
-          $chng = new Database();
-          $apply = $chng->RunDML("update request set ready_to_close = 0, status_id = '".$_POST['change']."' where id=".$_GET['n']);
+          $sql = "CALL closeRequest(? , ?)";
+          $stmt = $conn->prepare($sql);
+          $stmt->bindParam(1, $_POST['change'], PDO::PARAM_INT);
+          $stmt->bindParam(2, $_GET['n'], PDO::PARAM_INT);
+          $stmt->execute();
           echo "<meta http-equiv='refresh' content='0.1'>";
         }
         //}
@@ -670,18 +625,21 @@ if (isset($_SESSION["id"])) {
 <p style="page-break-after: always;"></p>
    <!-- Slideshow container -->
 
-   <div class="container banner11 print-container">
+  <div class="container banner11 print-container">
 
           <div class="col-xs-6">
 
             <!-- Full-width images with number and caption text -->
             <?php
 
-            $rs = $req1->GetReqImagesById();
-            $count = $rs->num_rows;
+            $sql = "CALL getReqImages(?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+            $stmt->execute();
+            $count = $stmt->rowCount();
 
-            if ($rowphoto = mysqli_fetch_assoc($rs)) {
-              foreach ($rs as $rowphoto) {
+            
+              foreach ($stmt as $rowphoto) {
 
             ?>
 
@@ -706,7 +664,7 @@ if (isset($_SESSION["id"])) {
               <!-- end of modal -->
             <?php
               }
-            }
+            
             ?>
             
           </div>
@@ -724,7 +682,10 @@ if (isset($_SESSION["id"])) {
 
       </div>
       </div>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </form>
+    <?php require 'layoutjs.php'; ?>
+    <!-- GOOGLE MAPS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="http://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 
@@ -736,7 +697,6 @@ if (isset($_SESSION["id"])) {
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
     <script src="js/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
-    </form>
   </body>
 
   </html>
