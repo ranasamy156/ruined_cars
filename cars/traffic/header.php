@@ -145,22 +145,22 @@
             </li> -->
             <li>
               <a href="24-1-2021/closed.php">
-              <i class="fa fa-angle-<?php echo $expr['left'] ?> pull-<?php echo $expr['left'] ?>"></i><i class="fa fa-times-circle" aria-hidden="true"></i> <span><?php echo $expr['closedrequests'] ?></span> <!--<span class="badge badge-danger"><?php //echo $pen; ?></span>-->
-              </a>
-            </li>
-            <li>
-              <a href="24-1-2021/lifting_procedures.php">
-              <i class="fa fa-angle-<?php echo $expr['left'] ?> pull-<?php echo $expr['left'] ?>"></i><i class="fa fa-align-justify" aria-hidden="true"></i> <span>محاضر الرفع</span> <!--<span class="badge badge-danger"><?php //echo $pen; ?></span>-->
-              </a>
-            </li>
-            <li>
-              <a href="reports.php">
-              <i class="fa fa-angle-<?php echo $expr['left'] ?> pull-<?php echo $expr['left'] ?>"></i><i class="fa fa-print" aria-hidden="true"></i> <span><?php echo $expr['printreport'] ?> و الاستعلامات</span> <!--<span class="badge badge-danger"><?php //echo $pen; ?></span>-->
+              <i class="fa fa-times-circle" aria-hidden="true"></i> <span><?php echo $expr['closedrequests'] ?></span> <!--<span class="badge badge-danger"><?php //echo $pen; ?></span>-->
               </a>
             </li>
             <li>
               <a href="24-1-2021/direct.php">
-              <i class="fa fa-angle-<?php echo $expr['left'] ?> pull-<?php echo $expr['left'] ?>"></i><i class="fa fa-arrow-left" aria-hidden="true"></i> <span>الطلبات الفورية</span> <!--<span class="badge badge-danger"><?php //echo $pen; ?></span>-->
+              <i class="fa fa-arrow-left" aria-hidden="true"></i> <span>الطلبات الفورية</span> <!--<span class="badge badge-danger"><?php //echo $pen; ?></span>-->
+              </a>
+            </li>
+            <li>
+              <a href="24-1-2021/lifting_procedures.php">
+              <i class="fa fa-align-justify" aria-hidden="true"></i> <span>محاضر الرفع</span> <!--<span class="badge badge-danger"><?php //echo $pen; ?></span>-->
+              </a>
+            </li>
+            <li>
+              <a href="reports.php">
+              <i class="fa fa-print" aria-hidden="true"></i> <span><?php echo $expr['printreport'] ?> و الاستعلامات</span> <!--<span class="badge badge-danger"><?php //echo $pen; ?></span>-->
               </a>
             </li>
             <li class="treeview">

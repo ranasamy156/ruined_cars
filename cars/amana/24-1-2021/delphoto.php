@@ -1,5 +1,4 @@
 <?php
-
     include_once '../../database.php';
     $img = $_GET['n'];
     if(file_exists($img))

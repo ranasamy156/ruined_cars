@@ -54,27 +54,6 @@
               </ul>
             </li>
             <li>
-              <a href="addcar.php">
-                <i class="fa fa-car" aria-hidden="true"></i> <span><?php echo $expr['cars'] ?></span>
-              </a>
-            </li>
-            <!-- <li>
-            <?php
-                // include_once '../database.php';
-                // $req1 = new Database();
-                // $rs = $req1->GetData("select rq.* ,st.description as status_name ,us.name from request rq ,statuses st, users us where rq.user_id = us.id and rq.status_id=st.id and rq.updated_at < now() - interval 7 DAY order by rq.id desc");
-                // $pen = $rs->num_rows;
-                ?>
-              <a href="pending.php">
-             <i class="fa fa-hourglass-half" aria-hidden="true"></i> <span><?php //echo $expr['pendingrequests'] ?></span> <span class="badge badge-danger"><?php //echo $pen; ?></span>
-              </a>
-            </li>
-            <li>
-              <a href="readytobeclosed.php">
-              <i class="fa fa-clone" aria-hidden="true"></i> <span><?php //echo $expr['readytobeclosed'] ?></span>
-              </a>
-            </li> -->
-            <li>
               <a href="closed.php">
               <i class="fa fa-times-circle" aria-hidden="true"></i> <span><?php echo $expr['closedrequests'] ?></span>
               </a>
@@ -87,6 +66,11 @@
             <li>
               <a href="lifting_procedures.php">
               <i class="fa fa-align-justify" aria-hidden="true"></i> <span>محاضر الرفع</span>
+              </a>
+            </li>
+            <li>
+              <a href="../reports.php">
+              <i class="fa fa-print" aria-hidden="true"></i> <span><?php echo $expr['printreport'] ?> و الاستعلامات</span> <!--<span class="badge badge-danger"><?php //echo $pen; ?></span>-->
               </a>
             </li>
             <li class="treeview">

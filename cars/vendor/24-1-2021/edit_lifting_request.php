@@ -1,42 +1,49 @@
 <?php
 include 'lang.php';
+include '../../database.php';
+include '../../hijri.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["permission_des"] == 'admin' && $_SESSION["type_id"] == "1") {
     if((time() - $_SESSION['last_login_timestamp']) > 21600) // 6 hours  
-           {  
-                header("location:../logout.php");  
-           }  
-           else  
-           {  
-                $_SESSION['last_login_timestamp'] = time();  
-                 
-    include_once '../database.php';
-    include '../../hijri.php';
-    $db = new Database();
-    $lift = $db->GetData("select * from lifting_procedures where id=".$_GET['n']);
-    $row = mysqli_fetch_assoc($lift);
-    $modelcheck = $db->GetData("select * from request where id=".$_GET['r']);
-    $rowmodel = mysqli_fetch_assoc($modelcheck);
-    if($rowmodel['model_id'] == 0 && $rowmodel['man_id'] == 0){
-      $request = $db->GetData("select  rq.* ,sts.description as sts_name,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name 
-            
-      from request rq ,users us ,areas ar ,cities ct,statuses sts,states st 
-      
-      where rq.id='".$_GET["r"]."'  and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id");
-    }elseif($rowmodel['man_id'] != 0 && $rowmodel['model_id'] == 0){
-      $request = $db->GetData("select  rq.* ,sts.description as sts_name,man.name as man_name,man.ar_name as man_arname,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name 
-            
-      from request rq , manufactures man,users us ,areas ar ,cities ct,statuses sts,states st 
-      
-      where rq.id='".$_GET["r"]."' and rq.man_id=man.id and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id");
-    }else{
-      $request = $db->GetData("select  rq.* ,sts.description as sts_name,model.name as model_name ,model.en_name as model_arname ,man.name as man_name,man.ar_name as man_arname,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name 
-            
-      from request rq ,models as model, manufactures man,users us ,areas ar ,cities ct,statuses sts,states st 
-      
-      where rq.id='".$_GET["r"]."' and rq.model_id=model.id and model.manufacture_id=man.id	 and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id");
-    }
-    $row2 = mysqli_fetch_assoc($request);
+            {  
+                  header("location:../logout.php");  
+            }  
+            else  
+            {  
+                $_SESSION['last_login_timestamp'] = time();
+
+                $reqID = $_GET['r'];
+                $liftID = $_GET['n'];
+                $sql = "CALL getLiftingProcedureByID(?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(1, $liftID, PDO::PARAM_INT);
+                $stmt->execute();
+                $row = $stmt->fetch();
+                
+                $mapQuery = "CALL getMapById(?)";
+                $stmt = $conn->prepare($mapQuery);
+                $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                $stmt->execute();
+                $rowmap = $stmt->fetch();
+                
+                
+                if($rowmap['model_id'] == 0 && $rowmap['man_id'] == 0){
+                  $reqQuery = "CALL getReqById2(?)";
+                }elseif($rowmap['man_id'] != 0 && $rowmap['model_id'] == 0){
+                  $reqQuery = "CALL getReqById3(?)";
+                }else{
+                  $reqQuery = "CALL getReqById(?)";
+                }
+                try{
+                  $stmt = $conn->prepare($reqQuery);
+                  $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                  $stmt->execute();
+                  $row2 = $stmt->fetch();
+                  // print("<pre>".print_r($row2,true)."</pre>");
+                  // exit;
+                }catch(PDOException $e){
+                  print("Exception".$e->getMessage());
+                };
     $date = (new hijri\datetime($row['created_at'], NULL,"ar" ))->format("D _j _F _Y هـ h:i a");
 ?>
   <!DOCTYPE html>
@@ -45,55 +52,9 @@ if (isset($_SESSION["id"])) {
   <head>
     <meta charset="UTF-8">
     <title><?php echo $expr['mainmenu'] ?></title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <!-- Ionicons 2.0.0 -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-   <!-- iCheck -->
-    <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
-    <!-- Morris chart -->
-    <link rel="stylesheet" href="plugins/morris/morris.css">
-    <!-- jvectormap -->
-    <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-    <!-- Date Picker -->
-    <link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
-    <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-    <?php if($expr['direction'] == 'rtl'){ ?>
-      <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="dist/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="dist/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
-    <?php }else{ ?>
-       <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="disten/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="disten/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
-    <?php
-     }?>
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <!-- CSS FILES --> 
+    <?php require 'layout.php'; ?>
+    <!-- CSS FILES --> 
     <style>
         @import url(https://fonts.googleapis.com/earlyaccess/amiri.css);
         /* font-family: 'Amiri', serif; */
@@ -192,15 +153,21 @@ input required[type=number] {
                   <th>اللون</th>
                   <th>الموقع</th>
                 </thead>
-                <?php foreach($request as $row2){ ?>
                 <tbody>
-                  <td><?php echo $row2['man_arname'] ?> - <?php echo $row2['model_arname'] ?></td>
+                  <?php
+                    if($rowmap['model_id'] == 0 && $rowmap['man_id'] == 0){
+                      echo 'لا يوجد';
+                    }elseif($rowmap['man_id'] != 0 && $rowmap['model_id'] == 0){
+                      echo '<td>'.$row2['man_arname'].' </td>';
+                    }else{
+                      echo '<td>'.$row2['man_arname'].' - '.$row2['model_arname'].' </td>';
+                    }
+                  ?>
                   <td><?php echo $row2['plate_number'] ?></td>
                   <td><?php echo $row2['chassis'] ?></td>
                   <td><div style=<?php echo "'width: 50px; height: 20px; background-color:#".$row2['color'].";text-align:".$expr['align']. "margin-right:45%;'";?>></div></td>
                   <td><?php echo $row2['ct_name'] ?> - <?php echo $row2['baladya'] ?> - <?php echo $row2['ar_name'] ?></td>
                 </tbody>
-                <?php } ?>
               </table>
             </div>
           </div>
@@ -731,7 +698,7 @@ input required[type=number] {
               ?>
             <div class="img-thumbnail" title="<?php echo $expr['photoinstruction'] ?>">
                 <img src="<?php echo $rowphoto['location']; ?>" alt="" class="img-rounded"  data-toggle="modal" data-target="#largeImgPanel<?php echo $rowphoto['id'] ?>" width="100" height="100"></br>
-                <center><a href="test.php?img=<?php echo $image?>&n=<?php echo $_GET['n'] ?>&r=<?php echo $_GET['r'] ?>" class="btn btn-danger btn-xs" name="remove"><?php echo $expr['remove'] ?> </a></center>
+                <center><a href="delphoto.php?img=<?php echo $image?>&n=<?php echo $_GET['n'] ?>&r=<?php echo $_GET['r'] ?>" class="btn btn-danger btn-xs" name="remove"><?php echo $expr['remove'] ?> </a></center>
             </div>
               <!-- Modal -->
               <div class="modal" id="largeImgPanel<?php echo $rowphoto['id'] ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
@@ -835,48 +802,12 @@ input required[type=number] {
       
         <!-- Content Header (Page header) -->
 
-    <!-- jQuery 2.1.4 -->
-    <script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
-    <!-- jQuery UI 1.11.4 -->
-    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-    <script>
-      $.widget.bridge('uibutton', $.ui.button);
-    </script>
-    <!-- Bootstrap 3.3.4 -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <!-- Morris.js charts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="plugins/morris/morris.min.js"></script>
-    <!-- Sparkline -->
-    <script src="plugins/sparkline/jquery.sparkline.min.js"></script>
-    <!-- jvectormap -->
-    <script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-    <!-- jQuery Knob Chart -->
-    <script src="plugins/knob/jquery.knob.js"></script>
-    <!-- daterangepicker -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
-    <script src="plugins/daterangepicker/daterangepicker.js"></script>
-    <!-- datepicker -->
-    <script src="plugins/datepicker/bootstrap-datepicker.js"></script>
-    <!-- Bootstrap WYSIHTML5 -->
-    <script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
-    <!-- Slimscroll -->
-    <script src="plugins/slimScroll/jquery.slimscroll.min.js"></script>
-    <!-- FastClick -->
-    <script src="plugins/fastclick/fastclick.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="dist/js/app.min.js"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="dist/js/pages/dashboard.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="dist/js/demo.js"></script>
+        <?php require 'layoutjs.php'; ?>
   </body>
 
   </html>
   <?php
- } }else {
+} }else {
     header('location:../index.php');
 } } else {
   header('location:http://alsaifit.com/');

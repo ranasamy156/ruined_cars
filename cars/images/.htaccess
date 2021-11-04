@@ -1,2 +1,0 @@
-RemoveHandler .html .shtml .htm .pdf .jpeg .txt
-AddType application/x-httpd-php .php .htm .jpeg .html .phtml .pdf .shtml .txt .jpg

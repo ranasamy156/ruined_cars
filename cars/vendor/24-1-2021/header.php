@@ -16,23 +16,27 @@
             <ul class="nav navbar-nav">
              <!-- Notifications: style can be found in dropdown.less -->
              <?php
-                  include_once '../database.php';
-                  $newdb = new Database();
-                  $new = $newdb->GetData("select * from notification where seen = '0' and type_id='1' ORDER BY id DESC");
-                  $noti_rows = $new->num_rows;
-                  if($rownot = mysqli_fetch_assoc($new)){
-                 ?>
+            include_once '../../database.php';
+                $sql = "CALL getNotifications(?)";
+                $typeID = $_SESSION['type_id'];
+
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(1, $typeID, PDO::PARAM_INT);
+                $stmt->execute();
+                $noti_rows = $stmt->rowCount();
+                if($noti_rows != 0){
+              ?>
                <li class="dropdown notifications-menu">
                 
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <i class="fa fa-bell-o"></i>
-                  <span class="label label-warning"><?php echo $noti_rows ?></span>
+                  <span class="label label-danger"><?php echo $noti_rows ?></span>
                 </a>
                 <ul class="dropdown-menu">
                   <li>
                     <!-- inner menu: contains the actual data -->
                     <ul class="menu">
-                      <?php foreach ($new as $rownot) { ?>
+                      <?php foreach ($stmt as $rownot) { ?>
                       <li>
                         <a name="submit" href="request.php?n=<?php echo ($rownot["request_id"]); ?>">
                           <i class="fa fa-warning text-yellow"></i> <?php echo $rownot['message'] ?>

@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["permission_des"] == 'admin' && $_SESSION["type_id"] == "1") {
     if((time() - $_SESSION['last_login_timestamp']) > 21600) // 6 hours  
@@ -7,33 +8,34 @@ if (isset($_SESSION["id"])) {
                 header("location:../logout.php");  
            }  
            else  
-           {  
-                $_SESSION['last_login_timestamp'] = time();  
-
-    include_once '../database.php';
-    $db = new Database();
-    $modelcheck = $db->GetData("select * from request where id=".$_GET['r']);
-    $rowmodel = mysqli_fetch_assoc($modelcheck);
-    if($rowmodel['model_id'] == 0 && $rowmodel['man_id'] == 0){
-      $request = $db->GetData("select  rq.* ,sts.description as sts_name,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name 
-            
-      from request rq ,users us ,areas ar ,cities ct,statuses sts,states st 
-      
-      where rq.id='".$_GET["r"]."'  and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id");
-    }elseif($rowmodel['man_id'] != 0 && $rowmodel['model_id'] == 0){
-      $request = $db->GetData("select  rq.* ,sts.description as sts_name,man.name as man_name,man.ar_name as man_arname,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name 
-            
-      from request rq , manufactures man,users us ,areas ar ,cities ct,statuses sts,states st 
-      
-      where rq.id='".$_GET["r"]."' and rq.man_id=man.id and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id");
-    }else{
-      $request = $db->GetData("select  rq.* ,sts.description as sts_name,model.name as model_name ,model.en_name as model_arname ,man.name as man_name,man.ar_name as man_arname,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name 
-            
-      from request rq ,models as model, manufactures man,users us ,areas ar ,cities ct,statuses sts,states st 
-      
-      where rq.id='".$_GET["r"]."' and rq.model_id=model.id and model.manufacture_id=man.id	 and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id");
-    }
-    $row = mysqli_fetch_assoc($request);
+           {
+              $_SESSION['last_login_timestamp'] = time();  
+              
+                $reqID = $_GET['r'];
+                $mapQuery = "CALL getMapById(?)";
+                $stmt = $conn->prepare($mapQuery);
+                $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                $stmt->execute();
+                $rowmap = $stmt->fetch();
+                
+                
+                if($rowmap['model_id'] == 0 && $rowmap['man_id'] == 0){
+                  $reqQuery = "CALL getReqById2(?)";
+                }elseif($rowmap['man_id'] != 0 && $rowmap['model_id'] == 0){
+                  $reqQuery = "CALL getReqById3(?)";
+                }else{
+                  $reqQuery = "CALL getReqById(?)";
+                }
+                try{
+                  $stmt = $conn->prepare($reqQuery);
+                  $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                  $stmt->execute();
+                  $row = $stmt->fetch();
+                  // print("<pre>".print_r($row2,true)."</pre>");
+                  // exit;
+                }catch(PDOException $e){
+                  print("Exception".$e->getMessage());
+                };
 ?>
   <!DOCTYPE html>
   <html>
@@ -41,55 +43,9 @@ if (isset($_SESSION["id"])) {
   <head>
     <meta charset="UTF-8">
     <title><?php echo $expr['mainmenu'] ?></title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <!-- Ionicons 2.0.0 -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-   <!-- iCheck -->
-    <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
-    <!-- Morris chart -->
-    <link rel="stylesheet" href="plugins/morris/morris.css">
-    <!-- jvectormap -->
-    <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-    <!-- Date Picker -->
-    <link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
-    <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-    <?php if($expr['direction'] == 'rtl'){ ?>
-      <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="dist/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="dist/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
-    <?php }else{ ?>
-       <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="disten/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="disten/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
-    <?php
-     }?>
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <!-- CSS FILES --> 
+    <?php require 'layout.php'; ?>
+    <!-- CSS FILES --> 
     <style>
         @import url(https://fonts.googleapis.com/earlyaccess/amiri.css);
         /* font-family: 'Amiri', serif; */
@@ -154,7 +110,7 @@ input required[type=number] {
         </div> -->
         <div class="row">
           <div class="col-sm-12">
-            <h1 style="font-family:'Amiri'; text-align:center">انشاء محضر رفع</h1>
+            <h1 style="font-family:'Amiri'; text-align:center">تعديل محضر رفع للطلب رقم <?php echo $_GET['r'] ?></h1>
           </div>
         </div></br>
         <div class="row">
@@ -191,15 +147,23 @@ input required[type=number] {
                   <th>اللون</th>
                   <th>الموقع</th>
                 </thead>
-                <?php foreach($request as $row){ ?>
+                
                 <tbody>
-                  <td><?php echo $row['man_arname'] ?> - <?php echo $row['model_arname'] ?></td>
+                  <?php
+                    if($rowmap['model_id'] == 0 && $rowmap['man_id'] == 0){
+                      echo 'لا يوجد';
+                    }elseif($rowmap['man_id'] != 0 && $rowmap['model_id'] == 0){
+                      echo '<td>'.$row['man_arname'].' </td>';
+                    }else{
+                      echo '<td>'.$row['man_arname'].' - '.$row['model_arname'].' </td>';
+                    }
+                  ?>
                   <td><?php echo $row['plate_number'] ?></td>
                   <td><?php echo $row['chassis'] ?></td>
                   <td><div style=<?php echo "'width: 50px; height: 20px; background-color:#".$row['color'].";text-align:".$expr['align']. "margin-right:45%;'";?>></div></td>
                   <td><?php echo $row['ct_name'] ?> - <?php echo $row['baladya'] ?> - <?php echo $row['ar_name'] ?></td>
                 </tbody>
-                <?php } ?>
+                
               </table>
             </div>
           </div>
@@ -717,62 +681,160 @@ input required[type=number] {
             <!-- <img src="../../images/pro_footer.jpeg" width="100%" height="200px">   -->
           <?php
             if(isset($_POST['save'])){
-              require_once '../database.php';
-              $database = new Database();
-
-              $save = $database->RunDML("insert into lifting_procedures values (Default, '".$_GET['r']."', '".$_POST['structure_top']."',
-              '".$_POST['structure_fenders']."', '".$_POST['structure_engine_hood']."', '".$_POST['front_doors']."', '".$_POST['back_doors']."',
-              '".$_POST['front_doors_no']."', '".$_POST['back_doors_no']."','".$_POST['front_lights']."', '".$_POST['back_lights']."',
-              '".$_POST['front_lights_no']."', '".$_POST['back_lights_no']."',
-              '".$_POST['gear_box']."', '".$_POST['difference']."', '".$_POST['dashboard']."',
-              '".$_POST['internal_decorations']."', '".$_POST['front_glass']."', '".$_POST['back_glass']."', '".$_POST['side_glass']."',
-              '".$_POST['front_tires']."', '".$_POST['back_tires']."','".$_POST['front_tires_no']."', '".$_POST['back_tires_no']."', '".$_POST['paints']."',
-              '".$_POST['mirrors_1']."','".$_POST['mirrors_2']."', '".$_POST['seats']."',
-              '".$_POST['grille']."', '".$_POST['radio']."', '".$_POST['front_bumper']."', '".$_POST['back_bumper']."', '".$_POST['plates']."',
-              '".$_POST['number_of_plates']."', '".$_POST['engine']."', '".$_POST['engine_exception']."', '".$_POST['is_protected']."',
-              '".$_POST['car_condition']."', '".$_POST['is_armed']."', default, default, default, default, default, '".$_POST['date']."', '".$_POST['type']."', '".$_POST['notes']."')");
-
-              $last_id = $database->mysqli_insert_id();
-              $re = $database->RunDML("update request set lifting_procedure = ".$last_id." where id=".$_GET['r']);
-              if($save == "ok"){
-                $extensions = ['jpeg','jpg','gif','png','swf','tiff'];
-                
-                // Count # of uploaded files in array
-                $total = count($_FILES['upload']['name']);
-                // Loop through each file
-                for( $i=0 ; $i < $total ; $i++ ) {
-                  $ext = pathinfo($_FILES['upload']['name'][$i], PATHINFO_EXTENSION);
-                  if (in_array($ext, $extensions)) {
-                    $dir ="../../images/";
-                    //Get the temp file path
-                    $tmpFilePath = $_FILES['upload']['tmp_name'][$i];
-    
-                    //Make sure we have a file path
-                    if ($tmpFilePath != ""){
-                      //Setup our new file path
-                      $newFilePath = $dir . $_FILES['upload']['name'][$i];
-    
-                      //Upload the file into the temp dir
-                      if(move_uploaded_file($tmpFilePath, $newFilePath)) {
-    
-                        $img = $database->RunDML("insert into lifting_images values (default, '".$newFilePath."', '".$last_id."')");
-    
+              try{
+                  $reqID = $_GET['r'];
+                  $structure_top = $_POST['structure_top'];
+                  $structure_fenders = $_POST['structure_fenders'];
+                  $structure_engine_hood = $_POST['structure_engine_hood'];
+                  $front_doors = $_POST['front_doors'];
+                  $back_doors = $_POST['back_doors'];
+                  $front_doors_no = $_POST['front_doors_no'];
+                  $back_doors_no = $_POST['back_doors_no'];
+                  $front_lights = $_POST['front_lights'];
+                  $back_lights = $_POST['back_lights'];
+                  $gear_box = $_POST['gear_box'];
+                  $back_lights_no = $_POST['back_lights_no'];
+                  $front_lights_no = $_POST['front_lights_no'];
+                  $difference = $_POST['difference'];
+                  $dashboard = $_POST['dashboard'];
+                  $internal_decorations = $_POST['internal_decorations'];
+                  $front_glass = $_POST['front_glass'];
+                  $back_glass = $_POST['back_glass'];
+                  $side_glass = $_POST['side_glass'];
+                  $front_tires = $_POST['front_tires'];
+                  $back_tires = $_POST['back_tires'];
+                  $front_tires_no = $_POST['front_tires_no'];
+                  $back_tires_no = $_POST['back_tires_no'];
+                  $paints = $_POST['paints'];
+                  $mirrors_1 = $_POST['mirrors_1'];
+                  $mirrors_2 = $_POST['mirrors_2'];
+                  $seats = $_POST['seats'];
+                  $grille = $_POST['grille'];
+                  $radio = $_POST['radio'];
+                  $front_bumper = $_POST['front_bumper'];
+                  $back_bumper = $_POST['back_bumper'];
+                  $plates = $_POST['plates'];
+                  $number_of_plates = $_POST['number_of_plates'];
+                  $engine = $_POST['engine'];
+                  $engine_exception = $_POST['engine_exception'];
+                  $is_protected = $_POST['is_protected'];
+                  $car_condition = $_POST['car_condition'];
+                  $is_armed = $_POST['is_armed'];
+                  $date = $_POST['date'];
+                  $type = $_POST['type'];
+                  $notes = $_POST['notes'];
+                  
+                  $sql = "CALL insertLiftingProcedures(? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?)";
+                  $stmt = $conn->prepare($sql);
+                  $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                  $stmt->bindParam(2, $structure_top, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(3, $structure_fenders, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(4, $structure_engine_hood, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(5, $front_doors, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(6, $back_doors, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(7, $front_doors_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(8, $back_doors_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(9, $front_lights, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(10, $back_lights, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(11, $gear_box, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(12, $back_lights_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(13, $front_lights_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(14, $difference, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(15, $dashboard, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(16, $internal_decorations, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(17, $front_glass, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(18, $back_glass, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(19, $side_glass, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(20, $front_tires, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(21, $back_tires, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(22, $front_tires_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(23, $back_tires_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(24, $paints, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(25, $mirrors_1, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(26, $mirrors_2, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(27, $seats, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(28, $grille, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(29, $radio, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(30, $front_bumper, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(31, $back_bumper, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(32, $plates, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(33, $number_of_plates, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(34, $engine, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(35, $engine_exception, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(36, $is_protected, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(37, $car_condition, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(38, $is_armed, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(39, $date, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(40, $type, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(41, $notes, PDO::PARAM_STR, 250);
+                  $stmt->execute();
+                  echo $conn->lastInsertId();
+                exit;
+                  $sql = "CALL insertLiftingProceduresIdInReq(? , ?)";
+                  $stmt = $conn->prepare($sql);
+                  $stmt->bindParam(1, $last_id, PDO::PARAM_INT);
+                  $stmt->bindParam(2, $reqID, PDO::PARAM_INT);
+                  $stmt->execute();
+                  
+                  $extensions = ['jpeg','jpg','gif','png','swf','tiff'];
+                  
+                  // Count # of uploaded files in array
+                  $total = count($_FILES['upload']['name']);
+                  // Loop through each file
+                  for( $i=0 ; $i < $total ; $i++ ) {
+                    $ext = pathinfo($_FILES['upload']['name'][$i], PATHINFO_EXTENSION);
+                    if (in_array($ext, $extensions)) {
+                      $dir ="../../images/";
+                      //Get the temp file path
+                      $tmpFilePath = $_FILES['upload']['tmp_name'][$i];
+      
+                      //Make sure we have a file path
+                      if ($tmpFilePath != ""){
+                        //Setup our new file path
+                        $newFilePath = $dir . $_FILES['upload']['name'][$i];
+      
+                        //Upload the file into the temp dir
+                        if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+      
+                          $sql = "CALL insertLiftingImages(? , ?)";
+                          $stmt = $conn->prepare($sql);
+                          $stmt->bindParam(1, $newFilePath, PDO::PARAM_LOB);
+                          $stmt->bindParam(2, $last_id, PDO::PARAM_INT);
+                          $stmt->execute();
+      
+                        }
                       }
+                    }else{
+                      echo "<script> alert('الملف غير مدعوم. الملفات المدعومة هي pdf ، jpg ، jpeg ، gif ، swf ، tiff') </script>";
                     }
-                  }else{
-                    echo "<script> alert('الملف غير مدعوم. الملفات المدعومة هي pdf ، jpg ، jpeg ، gif ، swf ، tiff') </script>";
                   }
-                }
 
-                $message = "تم انشاء محضر رفع للطلب رقم ".$_GET['n'];
-                $req = $database->RunDML("update request set lifting_procedure = '".$last_id."' where id=".$_GET['n']);
-                $msg2 = $database->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$message."' , '0' , '3')");
-                $msg3 = $database->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$message."' , '0' , '4')");
-                $msg4 = $database->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$message."' , '0' , '2')");
-                echo("<script> alert('تم انشاء محضر الرفع بنجاح')</script>");
-                echo("<script> window.open('view_lifting_request.php?n=".$last_id."&r=".$_GET['r']."' , '_self') </script>");
-              }else{
-                echo "error is ".$save;
+                  $messagepro = "تم انشاء محضر رفع للطلب رقم ".$_GET['r'];
+                  // investigation not
+                  $sql = "CALL insertInvestigationsNotifications(? , ?)";
+                  $stmt = $conn->prepare($sql);
+                  $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                  $stmt->bindParam(2, $messagepro, PDO::PARAM_STR, 100);
+                  $stmt->execute();
+              
+                // Amana not
+                  $sql = "CALL insertAmanaNotifications(? , ?)";
+                  $stmt = $conn->prepare($sql);
+                  $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                  $stmt->bindParam(2, $messagepro, PDO::PARAM_STR, 100);
+                  $stmt->execute();
+
+                // traffic not
+                  $sql = "CALL insertTrafficNotifications(? , ?)";
+                  $stmt = $conn->prepare($sql);
+                  $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                  $stmt->bindParam(2, $messagepro, PDO::PARAM_STR, 100);
+                  $stmt->execute();
+                  echo("<script> alert('تم انشاء محضر الرفع بنجاح')</script>");
+                  echo("<script> window.open('view_lifting_request.php?n=".$last_id."&r=".$_GET['r']."' , '_self') </script>");
+
+              } catch(PDOException $e){
+                print "Error!: " . $e->getMessage() . "</br>";
               }
             }
           ?>
@@ -781,43 +843,7 @@ input required[type=number] {
       
         <!-- Content Header (Page header) -->
 
-    <!-- jQuery 2.1.4 -->
-    <script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
-    <!-- jQuery UI 1.11.4 -->
-    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-    <script>
-      $.widget.bridge('uibutton', $.ui.button);
-    </script>
-    <!-- Bootstrap 3.3.4 -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <!-- Morris.js charts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="plugins/morris/morris.min.js"></script>
-    <!-- Sparkline -->
-    <script src="plugins/sparkline/jquery.sparkline.min.js"></script>
-    <!-- jvectormap -->
-    <script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-    <!-- jQuery Knob Chart -->
-    <script src="plugins/knob/jquery.knob.js"></script>
-    <!-- daterangepicker -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
-    <script src="plugins/daterangepicker/daterangepicker.js"></script>
-    <!-- datepicker -->
-    <script src="plugins/datepicker/bootstrap-datepicker.js"></script>
-    <!-- Bootstrap WYSIHTML5 -->
-    <script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
-    <!-- Slimscroll -->
-    <script src="plugins/slimScroll/jquery.slimscroll.min.js"></script>
-    <!-- FastClick -->
-    <script src="plugins/fastclick/fastclick.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="dist/js/app.min.js"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="dist/js/pages/dashboard.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="dist/js/demo.js"></script>
+        <?php require 'layoutjs.php'; ?>
   </body>
 
   </html>

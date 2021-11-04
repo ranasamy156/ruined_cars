@@ -1,36 +1,41 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "1") {
-    include_once '../database.php';
-    include '../../hijri.php';
-    $db = new Database();
-    $lift = $db->GetData("select * from lifting_procedures where id=".$_GET['n']);
-    $row = mysqli_fetch_assoc($lift);
-    $modelcheck = $db->GetData("select * from request where id=".$_GET['r']);
-    $rowmodel = mysqli_fetch_assoc($modelcheck);
-    if($rowmodel['model_id'] == 0 && $rowmodel['man_id'] == 0){
-      $request = $db->GetData("select  rq.* ,sts.description as sts_name,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name 
-            
-      from request rq ,users us ,areas ar ,cities ct,statuses sts,states st 
-      
-      where rq.id='".$_GET["r"]."'  and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id");
-    }elseif($rowmodel['man_id'] != 0 && $rowmodel['model_id'] == 0){
-      $request = $db->GetData("select  rq.* ,sts.description as sts_name,man.name as man_name,man.ar_name as man_arname,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name 
-            
-      from request rq , manufactures man,users us ,areas ar ,cities ct,statuses sts,states st 
-      
-      where rq.id='".$_GET["r"]."' and rq.man_id=man.id and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id");
-    }else{
-      $request = $db->GetData("select  rq.* ,sts.description as sts_name,model.name as model_name ,model.en_name as model_arname ,man.name as man_name,man.ar_name as man_arname,us.name , ct.name as ct_name, ar.name as ar_name, st.name as st_name 
-            
-      from request rq ,models as model, manufactures man,users us ,areas ar ,cities ct,statuses sts,states st 
-      
-      where rq.id='".$_GET["r"]."' and rq.model_id=model.id and model.manufacture_id=man.id	 and rq.user_id = us.id and rq.city_id=ct.id and rq.area_id =ar.id and rq.state_id=st.id and rq.status_id=sts.id");
-    }
-    $row2 = mysqli_fetch_assoc($request);
-    $date = (new hijri\datetime($row['created_at'], NULL,"ar" ))->format("D _j _F _Y هـ h:i a");
+    $reqID = $_GET['r'];
+    $liftID =  $_GET['n'];
 
+    $sql = "CALL getLiftingProcedureByID(?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(1, $liftID, PDO::PARAM_INT);
+    $stmt->execute();
+    $row = $stmt->fetch();
+
+    $mapQuery = "CALL getMapById(?)";
+    $stmt = $conn->prepare($mapQuery);
+    $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+    $stmt->execute();
+    $rowmap = $stmt->fetch();
+    
+    
+    if($rowmap['model_id'] == 0 && $rowmap['man_id'] == 0){
+      $reqQuery = "CALL getReqById2(?)";
+    }elseif($rowmap['man_id'] != 0 && $rowmap['model_id'] == 0){
+      $reqQuery = "CALL getReqById3(?)";
+    }else{
+      $reqQuery = "CALL getReqById(?)";
+    }
+    try{
+      $stmt = $conn->prepare($reqQuery);
+      $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+      $stmt->execute();
+      $row2 = $stmt->fetch();
+      // print("<pre>".print_r($row2,true)."</pre>");
+      // exit;
+    }catch(PDOException $e){
+      print("Exception".$e->getMessage());
+    };
 ?>
   <!DOCTYPE html>
   <html>
@@ -38,160 +43,114 @@ if (isset($_SESSION["id"])) {
   <head>
     <meta charset="UTF-8">
     <title><?php echo $expr['mainmenu'] ?></title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <!-- Ionicons 2.0.0 -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-   <!-- iCheck -->
-    <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
-    <!-- Morris chart -->
-    <link rel="stylesheet" href="plugins/morris/morris.css">
-    <!-- jvectormap -->
-    <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-    <!-- Date Picker -->
-    <link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
-    <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-    <?php if($expr['direction'] == 'rtl'){ ?>
-      <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="dist/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="dist/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
-    <?php }else{ ?>
-       <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="disten/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="disten/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
-    <?php
-     }?>
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <!-- CSS FILES --> 
+    <?php require 'layout.php'; ?>
+    <!-- CSS FILES --> 
     <style>
         @import url(https://fonts.googleapis.com/earlyaccess/amiri.css);
         /* font-family: 'Amiri', serif; */
-.navbar-nav>.user-menu>.dropdown-menu>li.user-header>p {
-    z-index: 5;
-    color: #fff;
-    color: black;
-    font-size: 17px;
-    margin-top: 10px;
-}
-.adminpanel{
-        width:100%;
-        color:#000;
-        margin:30px auto 0;
-        padding:50px;
-        border:1px solid #ddd;
-        text-align:<?php echo $expr['align'] ?>;
-      font-size: medium;
-      margin-top: 0px;
-    background-color: white;
-    
-        }
-        .fa-search{
-      color:white;
-    }
-    .navbar-nav>.user-menu>.dropdown-menu>li.user-header {
-    height: 150px;
-    padding: 5px;
-    text-align: center;
-}
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+          .navbar-nav>.user-menu>.dropdown-menu>li.user-header>p {
+              z-index: 5;
+              color: #fff;
+              color: black;
+              font-size: 17px;
+              margin-top: 10px;
+          }
+          .adminpanel{
+                  width:100%;
+                  color:#000;
+                  margin:30px auto 0;
+                  padding:50px;
+                  border:1px solid #ddd;
+                  text-align:<?php echo $expr['align'] ?>;
+                font-size: medium;
+                margin-top: 0px;
+              background-color: white;
+              
+                  }
+                  .fa-search{
+                color:white;
+              }
+              .navbar-nav>.user-menu>.dropdown-menu>li.user-header {
+              height: 150px;
+              padding: 5px;
+              text-align: center;
+          }
+          /* Chrome, Safari, Edge, Opera */
+          input::-webkit-outer-spin-button,
+          input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
 
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
+          /* Firefox */
+          input[type=number] {
+            -moz-appearance: textfield;
+          }
 
-.progressbar li {
-      list-style-type: none;
-      width: 20%;
-      float: <?php echo $expr['right'] ?>;
-      font-size: 12px;
-      position: relative;
-      text-align: center;
-      text-transform: uppercase;
-      color: #7d7d7d;
-  }
-  .progressbar li:before {
-      width: 30px;
-      height: 30px;
-      content: ' \2714';
-      counter-increment: step;
-      line-height: 30px;
-      border: 2px solid #7d7d7d;
-      display: block;
-      text-align: center;
-      margin: 0 auto 10px auto;
-      border-radius: 50%;
-      background-color: white;
-  }
-  .progressbar li:after {
-      width: 100%;
-      height: 2px;
-      content: '';
-      position: absolute;
-      background-color: #7d7d7d;
-      top: 15px;
-      left: 50%;
-      z-index: -1;
-  }
-  .progressbar li:first-child:after {
-      content: none;
-  }
-  .progressbar li.active {
-      color: white;
-      font-size: larger;
+          .progressbar li {
+                list-style-type: none;
+                width: 20%;
+                float: <?php echo $expr['right'] ?>;
+                font-size: 12px;
+                position: relative;
+                text-align: center;
+                text-transform: uppercase;
+                color: #7d7d7d;
+            }
+            .progressbar li:before {
+                width: 30px;
+                height: 30px;
+                content: ' \2714';
+                counter-increment: step;
+                line-height: 30px;
+                border: 2px solid #7d7d7d;
+                display: block;
+                text-align: center;
+                margin: 0 auto 10px auto;
+                border-radius: 50%;
+                background-color: white;
+            }
+            .progressbar li:after {
+                width: 100%;
+                height: 2px;
+                content: '';
+                position: absolute;
+                background-color: #7d7d7d;
+                top: 15px;
+                left: 50%;
+                z-index: -1;
+            }
+            .progressbar li:first-child:after {
+                content: none;
+            }
+            .progressbar li.active {
+                color: white;
+                font-size: larger;
 
-  }
-  .progressbar li.active:before {
-      border-color: #55b776;
-      background-color: #55b776;
-  } 
-  .progressbar li.active + li:after {
-      background-color: #55b776;
-  }
+            }
+            .progressbar li.active:before {
+                border-color: #55b776;
+                background-color: #55b776;
+            } 
+            .progressbar li.active + li:after {
+                background-color: #55b776;
+            }
 
-  .progressbar li.refuse {
-      color: white;
-      font-size: large;
-      content: '\2715';
-  }
-  .progressbar li.refuse:before {
-      border-color: #D60015;
-      background-color: #D60015;
-      content: '\2715';
-  } 
-  .progressbar li.refuse + li:after {
-      background-color: #D60015;
-      content: '\2715';
-  }
+            .progressbar li.refuse {
+                color: white;
+                font-size: large;
+                content: '\2715';
+            }
+            .progressbar li.refuse:before {
+                border-color: #D60015;
+                background-color: #D60015;
+                content: '\2715';
+            } 
+            .progressbar li.refuse + li:after {
+                background-color: #D60015;
+                content: '\2715';
+            }
     </style>
     <script>
 $(document).ready(function(){
@@ -235,9 +194,6 @@ $(document).ready(function(){
       </div>
         <div class="row">
           <div class="col-lg-12">
-          <?php if($row2['status_id'] == 10){ ?>
-          <a href="edit_lifting_request.php?n=<?php echo $_GET['n'] ?>&r=<?php echo $_GET['r'] ?>" class="btn btn-success" style="float:right;"><?php echo $expr['edit'] ?></a>
-          <?php } ?>
             <a target="_blank" href="print_lifting_procedure.php?n=<?php echo $_GET['n'] ?>&r=<?php echo $_GET['r'] ?>" class="btn btn-primary" style="float:left;">طباعة</a>
             <h1 style="font-family:'Amiri'; text-align:center">محضر رفع للطلب رقم <?php echo $_GET['r'] ?></h1>
           </div>
@@ -246,7 +202,7 @@ $(document).ready(function(){
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
               <div class="table-responsive">
-              <table class="table">
+                <table class="table">
                   <thead>
                     <th>مندوب مؤسسة عين العرب</th>
                     <th>الأمانه</th>
@@ -294,24 +250,24 @@ $(document).ready(function(){
           </div>
           </br>
         <div class="row">
-          <div class="col-lg-1"></div>
-          <div class="col-lg-4">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-3">
             <label for="date">التاريخ: </label>
-            <?php echo $date ?>
+            <?php echo $row['created_at'] ?>
           </div>
-          <div class="col-lg-3">
+          <div class="col-sm-4">
             <label for="date">جري رفع: </label>
             <?php echo $row['type'] ?>
           </div>
-          <div class="col-lg-3">
+          <div class="col-sm-3">
             <label for="date">من نطاق بلدية: </label>
             <?php echo $row2['baladya'] ?>
           </div>
-          <div class="col-lg-1"></div>
+          <div class="col-sm-1"></div>
         </div></br>
         <div class="row">
-          <div class="col-lg-1"></div>
-          <div class="col-lg-10 m-auto">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10 m-auto">
             <div class="table-responsive">
               <table class="table adminpanel">
                 <thead>
@@ -321,22 +277,28 @@ $(document).ready(function(){
                   <th>اللون</th>
                   <th>الموقع</th>
                 </thead>
-                <?php foreach($request as $row2){ ?>
                 <tbody>
-                  <td><?php echo $row2['man_arname'] ?> - <?php echo $row2['model_arname'] ?></td>
+                  <?php
+                    if($rowmap['model_id'] == 0 && $rowmap['man_id'] == 0){
+                      echo 'لا يوجد';
+                    }elseif($rowmap['man_id'] != 0 && $rowmap['model_id'] == 0){
+                      echo '<td>'.$row2['man_arname'].' </td>';
+                    }else{
+                      echo '<td>'.$row2['man_arname'].' - '.$row2['model_arname'].' </td>';
+                    }
+                  ?>
                   <td><?php echo $row2['plate_number'] ?></td>
                   <td><?php echo $row2['chassis'] ?></td>
                   <td><div style=<?php echo "'width: 50px; height: 20px; background-color:#".$row2['color'].";text-align:".$expr['align']. "margin-right:45%;'";?>></div></td>
-                  <td><?php echo $row2['ct_name'] ?> - <?php echo $row2['baladya'] ?> - <?php echo $row2['ar_name'] ?></td>
+                  <td><?php echo $row2['st_name'] ?> - <?php echo $row2['ct_name'] ?> - <?php echo $row2['baladya'] ?> - <?php echo $row2['ar_name'] ?></td>
                 </tbody>
-                <?php } ?>
               </table>
             </div>
           </div>
-          <div class="col-lg-1"></div>
+          <div class="col-sm-1"></div>
         </div></br>
 
-          <div class="row">
+        <div class="row">
             <div class="col-lg-1"></div>
             <div class="col-lg-5 m-auto">
               <div class="table-responsive">
@@ -674,7 +636,7 @@ $(document).ready(function(){
             </div>
             <?php 
             if($row['vendor_status'] == 0){ 
-              if($row['amana_status'] == 2 || $row['traffic_status'] == 2 || $row['inv_status'] == 2){
+              if($row['traffic_status'] == 2 || $row['inv_status'] == 2 || $row['amana_status'] == 2){
             ?>
             <div class="col-sm-2">
             </div>
@@ -702,42 +664,84 @@ $(document).ready(function(){
           </div>
             <?php
               if(isset($_POST['sendpro'])){
-                $db5 = new database();
+                $liftID = $_GET['n'];
+                $reqID = $_GET['r'];
                 $messagepro = "تم تغيير حالة محضر الرفع للطلب رقم ".$_GET['r']." من قبل مندوب مؤسسة عين العرب";
+
+
                   if($_POST['procedures'] == 1){
-                    $li = $db5->RunDML("update lifting_procedures set vendor_status = '1' where id=".$_GET['n']);
-                    if($row['amana_status'] == 1 && $row['inv_status'] == 1 && $row['traffic_status'] == 1){
-                      $st = $db5->RunDML("update request set accepted_at = NOW(), status_id = '13' where id =".$_GET['r']);
+                    $sql = "CALL changeVendorStatus1(?)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(1, $liftID, PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    if($row['traffic_status'] == 1 && $row['inv_status'] == 1 && $row['vendor_status'] == 1){
+                      $sql = "CALL changeVendorStatus2(?)";
+                      $stmt = $conn->prepare($sql);
+                      $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                      $stmt->execute();
+                      
                     }else{
-                      $st = $db5->RunDML("update request set status_id = '32' where id =".$_GET['r']);
+                      $sql = "CALL changeVendorStatus3(?)";
+                      $stmt = $conn->prepare($sql);
+                      $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                      $stmt->execute();
+                      
                     }
                   }elseif($_POST['procedures'] == 2){
-                    $st = $db5->RunDML("update request set status_id = '33', reason = '".$_POST['reason']."' where id=".$_GET['r']);
-                    $li = $db5->RunDML("update lifting_procedures set vendor_status = '2' where id=".$_GET['n']);
-                  }
+                      $reason = $_POST['reason'];
+                      $sql = "CALL changeVendorStatus4(? , ?)";
+                      $stmt = $conn->prepare($sql);
+                      $stmt->bindParam(1, $reason, PDO::PARAM_STR, 100);
+                      $stmt->bindParam(2, $reqID, PDO::PARAM_INT);
+                      $stmt->execute();
 
-                $msg2 = $db5->RunDML("insert into notification values (Default, '".$_GET['r']."' , '".$messagepro."' , '0' , '3')");
-                $msg3 = $db5->RunDML("insert into notification values (Default, '".$_GET['r']."' , '".$messagepro."' , '0' , '4')");
-                $msg4 = $db5->RunDML("insert into notification values (Default, '".$_GET['r']."' , '".$messagepro."' , '0' , '2')");
+                      $sql = "CALL changeVendorStatus5(?)";
+                      $stmt = $conn->prepare($sql);
+                      $stmt->bindParam(1, $liftID, PDO::PARAM_INT);
+                      $stmt->execute();
+                  }
+                  // investigation not
+                    $sql = "CALL insertInvestigationsNotifications(? , ?)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                    $stmt->bindParam(2, $messagepro, PDO::PARAM_STR, 100);
+                    $stmt->execute();
+                
+                  // Amana not
+                    $sql = "CALL insertAmanaNotifications(? , ?)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                    $stmt->bindParam(2, $messagepro, PDO::PARAM_STR, 100);
+                    $stmt->execute();
+
+                  // traffic not
+                    $sql = "CALL insertTrafficNotifications(? , ?)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                    $stmt->bindParam(2, $messagepro, PDO::PARAM_STR, 100);
+                    $stmt->execute();
 
                 echo "<meta http-equiv='refresh' content='0.1'>";	                  
               }
             ?>
           </br>
           <div class="row">
-            <div class="col-lg-1"></div>
-            <div class="col-lg-10">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
             <label>الصور لحظة الرصد</label></br>
 
               <!-- Full-width images with number and caption text -->
               <?php
-                include_once '../database.php';
-                $req1 = new Database();
-                $rs = $req1->GetData("select  * from images where request_id='".$_GET["r"]."'");
-                $count = $rs->num_rows;
+                $sql = "CALL getReqImages(?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                $stmt->execute();
+                // $rowph = $stmt->fetchAll();
+                $count = $stmt->rowCount();
 
-                if ($rowphoto = mysqli_fetch_assoc($rs)) {
-                  foreach ($rs as $rowphoto) {
+                
+                  foreach ($stmt as $rowphoto) {
 
               ?>
             <div class="img-thumbnail" title="<?php echo $expr['photoinstruction'] ?>">
@@ -748,7 +752,7 @@ $(document).ready(function(){
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <button type="button" class="close" data-dilgiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
@@ -761,25 +765,26 @@ $(document).ready(function(){
                 <!-- end of modal -->
               <?php
                 }
-              }
+              
               ?>
               
             </div>
-            <div class="col-lg-1"></div>
+            <div class="col-sm-1"></div>
           </div>
           </br>
           <div class="row">
-            <div class="col-lg-1"></div>
-            <div class="col-lg-10">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
             <label>الصور لحظة الرفع</label></br>
 
               <!-- Full-width images with number and caption text -->
               <?php
 
-              $rs = $db->GetData("select * from lifting_images where procedure_id=".$_GET['n']);
-
-              if ($rowphoto = mysqli_fetch_assoc($rs)) {
-                foreach ($rs as $rowphoto) {
+                $sql = "CALL getLiftingProcedureImages(?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(1, $liftID, PDO::PARAM_INT);
+                $stmt->execute();
+                foreach ($stmt as $rowphoto) {
 
               ?>
             <div class="img-thumbnail" title="<?php echo $expr['photoinstruction'] ?>">
@@ -803,11 +808,11 @@ $(document).ready(function(){
                 <!-- end of modal -->
               <?php
                 }
-              }
+              
               ?>
               
             </div>
-            <div class="col-lg-1"></div>
+            <div class="col-sm-1"></div>
           </div>
           </br>
           <div class="row">
@@ -828,43 +833,7 @@ $(document).ready(function(){
       </form>
       <!-- Content Header (Page header) -->
 
-    <!-- jQuery 2.1.4 -->
-    <script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
-    <!-- jQuery UI 1.11.4 -->
-    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-    <script>
-      $.widget.bridge('uibutton', $.ui.button);
-    </script>
-    <!-- Bootstrap 3.3.4 -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <!-- Morris.js charts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="plugins/morris/morris.min.js"></script>
-    <!-- Sparkline -->
-    <script src="plugins/sparkline/jquery.sparkline.min.js"></script>
-    <!-- jvectormap -->
-    <script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-    <!-- jQuery Knob Chart -->
-    <script src="plugins/knob/jquery.knob.js"></script>
-    <!-- daterangepicker -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
-    <script src="plugins/daterangepicker/daterangepicker.js"></script>
-    <!-- datepicker -->
-    <script src="plugins/datepicker/bootstrap-datepicker.js"></script>
-    <!-- Bootstrap WYSIHTML5 -->
-    <script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
-    <!-- Slimscroll -->
-    <script src="plugins/slimScroll/jquery.slimscroll.min.js"></script>
-    <!-- FastClick -->
-    <script src="plugins/fastclick/fastclick.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="dist/js/app.min.js"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="dist/js/pages/dashboard.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="dist/js/demo.js"></script>
+      <?php require 'layoutjs.php'; ?>
   </body>
 
   </html>
