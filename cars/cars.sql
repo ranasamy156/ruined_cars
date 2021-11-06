@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.4
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 04, 2021 at 03:55 PM
--- Server version: 10.4.17-MariaDB
--- PHP Version: 7.3.27
+-- Generation Time: Nov 07, 2021 at 12:52 AM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 7.3.31
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -168,7 +168,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insertInvestigationsNotifications` 
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insertLiftingImages` (IN `filepath` TEXT, IN `itemID` INT)  insert into lifting_images values (default, filepath, itemID)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insertLiftingProcedures` (IN `reqID` INT, IN `structure_top` VARCHAR(100), IN `structure_fenders` VARCHAR(100), IN `structure_engine_hood` VARCHAR(100), IN `front_doors` VARCHAR(100), IN `back_doors` VARCHAR(100), IN `front_doors_no` VARCHAR(100), IN `back_doors_no` VARCHAR(100), IN `front_lights` VARCHAR(100), IN `back_lights` VARCHAR(100), IN `gear_box` VARCHAR(100), IN `back_lights_no` VARCHAR(100), IN `front_lights_no` VARCHAR(100), IN `difference` VARCHAR(100), IN `dashboard` VARCHAR(100), IN `internal_decorations` VARCHAR(100), IN `front_glass` VARCHAR(100), IN `back_glass` VARCHAR(100), IN `side_glass` VARCHAR(100), IN `front_tires` VARCHAR(100), IN `back_tires` VARCHAR(100), IN `front_tires_no` VARCHAR(100), IN `back_tires_no` VARCHAR(100), IN `paints` VARCHAR(100), IN `mirrors_1` VARCHAR(100), IN `mirrors_2` VARCHAR(100), IN `seats` VARCHAR(100), IN `grille` VARCHAR(100), IN `radio` VARCHAR(100), IN `front_bumper` VARCHAR(100), IN `back_bumper` VARCHAR(100), IN `plates` VARCHAR(100), IN `number_of_plates` VARCHAR(100), IN `enginee` VARCHAR(100), IN `engine_exception` VARCHAR(100), IN `is_protected` VARCHAR(100), IN `car_condition` VARCHAR(100), IN `is_armed` VARCHAR(100), IN `datee` VARCHAR(100), IN `type` VARCHAR(100), IN `notes` VARCHAR(250))  insert into lifting_procedures values (Default, reqID, structure_top, structure_fenders, structure_engine_hood, front_doors, back_doors, front_doors_no, back_doors_no, front_lights, back_lights, front_lights_no, back_lights_no, gear_box, difference, dashboard, internal_decorations, front_glass, back_glass, side_glass, front_tires, back_tires, front_tires_no, back_tires_no, paints, mirrors_1, mirrors_2, seats, grille, radio, front_bumper, back_bumper, plates, number_of_plates, enginee, engine_exception, is_protected, car_condition, is_armed, default, default, default, default, default, datee, type, notes)$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertLiftingProcedures` (IN `reqID` INT, IN `structure_top` VARCHAR(100), IN `structure_fenders` VARCHAR(100), IN `structure_engine_hood` VARCHAR(100), IN `front_doors` VARCHAR(100), IN `back_doors` VARCHAR(100), IN `front_doors_no` VARCHAR(100), IN `back_doors_no` VARCHAR(100), IN `front_lights` VARCHAR(100), IN `back_lights` VARCHAR(100), IN `gear_box` VARCHAR(100), IN `back_lights_no` VARCHAR(100), IN `front_lights_no` VARCHAR(100), IN `difference` VARCHAR(100), IN `dashboard` VARCHAR(100), IN `internal_decorations` VARCHAR(100), IN `front_glass` VARCHAR(100), IN `back_glass` VARCHAR(100), IN `side_glass` VARCHAR(100), IN `front_tires` VARCHAR(100), IN `back_tires` VARCHAR(100), IN `front_tires_no` VARCHAR(100), IN `back_tires_no` VARCHAR(100), IN `paints` VARCHAR(100), IN `mirrors_1` VARCHAR(100), IN `mirrors_2` VARCHAR(100), IN `seats` VARCHAR(100), IN `grille` VARCHAR(100), IN `radio` VARCHAR(100), IN `front_bumper` VARCHAR(100), IN `back_bumper` VARCHAR(100), IN `plates` VARCHAR(100), IN `number_of_plates` VARCHAR(100), IN `enginee` VARCHAR(100), IN `engine_exception` VARCHAR(100), IN `is_protected` VARCHAR(100), IN `car_condition` VARCHAR(100), IN `is_armed` VARCHAR(100), IN `datee` VARCHAR(100), IN `type` VARCHAR(100), IN `notes` VARCHAR(250))  insert into lifting_procedures (`id`, `request_id`, `structure_top`, `structure_fenders`, `structure_engine_hood`, `front_doors`, `back_doors`, `front_doors_no`, `back_doors_no`, `front_lights`, `back_lights`, `front_lights_no`, `back_lights_no`, `gear_box`, `difference`, `dashboard`, `internal_decorations`, `front_glass`, `back_glass`, `side_glass`, `front_tires`, `back_tires`, `front_tires_no`, `back_tires_no`, `paints`, `mirrors_1`, `mirrors_2`, `seats`, `grille`, `radio`, `front_bumper`, `back_bumper`, `plates`, `number_of_plates`, `engine`, `engine_exception`, `is_protected`, `car_condition`, `is_armed`, `reason`, `amana_status`, `traffic_status`, `inv_status`, `vendor_status`, `created_at`, `type`, `notes`) VALUES (DEFAULT, reqID, structure_top, structure_fenders, structure_engine_hood, front_doors, back_doors, front_doors_no, back_doors_no, front_lights, back_lights, front_lights_no, back_lights_no, gear_box, difference, dashboard, internal_decorations, front_glass, back_glass, side_glass, front_tires, back_tires, front_tires_no, back_tires_no, paints, mirrors_1, mirrors_2, seats, grille, radio, front_bumper, back_bumper, plates, number_of_plates, enginee, engine_exception, is_protected, car_condition, is_armed, default, default, default, default, default, datee, type, notes)$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insertLiftingProceduresIdInReq` (IN `last_id` INT, IN `reqID` INT)  update request set lifting_procedure = last_id where id=reqID$$
 
@@ -9736,9 +9736,9 @@ INSERT INTO `lifting_procedures` (`id`, `request_id`, `structure_top`, `structur
 (85, 408, 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 0, 0, 'سليم', 'سليم', 0, 0, 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 0, 0, 'جيدة', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'يوجد', '', 'لا يوجد', '', 'نعم', 'مصدومة', 'نعم', '', 0, 0, 0, 0, '2021-10-24 12:06:00', 'سيارة خربة', ' jkenfwlkne\r\n'),
 (87, 406, 'سليم', 'سليم', 'موجود', 'سليم', 'سليم', 0, 0, 'سليم', 'سليم', 0, 0, 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 0, 0, 'جيدة', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'يوجد', '', 'لا يوجد', ' ', 'نعم', 'مصدومة', 'نعم', '', 0, 0, 0, 0, '2021-10-24 15:08:00', 'هيكل تالف', ' retherth'),
 (88, 405, 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 0, 0, 'سليم', 'سليم', 0, 0, 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 0, 0, 'جيدة', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'يوجد', '', 'لا يوجد', ' ', 'نعم', 'مصدومة', 'نعم', '', 1, 2, 1, 1, '2021-10-24 15:11:00', 'سيارة خربة', ' efrewfe'),
-(91, 407, 'سليم', 'تالف', 'سليم', 'تالف', 'تالف', 1, 2, 'تالف', 'تالف', 5, 6, 'غير موجود', 'سليم', 'سليم', 'سليم', 'تالف', 'سليم', 'تالف', 'تالف', 'تالف', 3, 4, 'رديئة', 'سليم', 'غير موجود', 'موجود', 'تالف', 'غير موجود', 'موجود', 'تالف', 'يوجد', '4', ' يوجد', 'لا شئ', 'نعم', 'مصدومة', 'جزء منها', '', 0, 0, 0, 0, '2021-11-04 13:44:00', 'سيارة خربة', 'السيارة في حالة جيدة'),
 (92, 399, 'سليم', 'تالف', 'غير موجود', 'سليم', 'تالف', 0, 5, 'سليم', 'تالف', 0, 2, 'تالف', 'غير موجود', 'تالف', 'سليم', 'موجود', 'غير موجود', 'تالف', 'غير موجود', 'موجود', 0, 0, 'رديئة', 'غير موجود', 'موجود', 'تالف', 'تالف', 'تالف', 'موجود', 'سليم', 'لا يوجد', '', ' يوجد', 'لا شئ ناقص', 'نعم', 'محروقة', 'نعم', '', 0, 0, 0, 0, '2021-11-04 13:56:00', 'سيارة خربة', 'لا يوجد ملاحظات - السيارة بحالة سيءة'),
-(93, 400, 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 0, 0, 'سليم', 'سليم', 0, 0, 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 0, 0, 'جيدة', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'يوجد', '', 'لا يوجد', ' ', 'نعم', 'مصدومة', 'نعم', '', 0, 0, 0, 0, '2021-11-04 14:03:00', 'سيارة خربة', 'نيننينيينينينين');
+(93, 400, 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 0, 0, 'سليم', 'سليم', 0, 0, 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 0, 0, 'جيدة', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'سليم', 'يوجد', '', 'لا يوجد', ' ', 'نعم', 'مصدومة', 'نعم', '', 0, 0, 0, 0, '2021-11-04 14:03:00', 'سيارة خربة', 'نيننينيينينينين'),
+(120, 407, 'تالف', 'سليم', 'سليم', 'غير موجود', 'سليم', 0, 0, 'تالف', 'غير موجود', 0, 0, 'تالف', 'غير موجود', 'تالف', 'غير موجود', 'تالف', 'سليم', 'سليم', 'غير موجود', 'سليم', 0, 0, 'رديئة', 'تالف', 'سليم', 'غير موجود', 'غير موجود', 'تالف', 'تالف', 'غير موجود', 'لا يوجد', '', 'لا يوجد', ' ', 'لا', 'محروقة', 'جزء منها', '', 0, 0, 0, 0, '2021-11-06 21:21:00', 'سيارة خربة', 'fmllll');
 
 -- --------------------------------------------------------
 
@@ -10532,6 +10532,7 @@ CREATE TABLE `notification` (
 --
 
 INSERT INTO `notification` (`id`, `request_id`, `message`, `seen`, `type_id`) VALUES
+(0, 407, 'تم انشاء محضر رفع للطلب رقم 407', '0', 3),
 (1, 405, 'تم تغيير حالة الطلب رقم 405من قبل الامانة', '0', 3),
 (2, 405, 'تم تغيير حالة الطلب رقم 405من قبل الامانة', '0', 1),
 (3, 405, 'تم تغيير حالة الطلب رقم 405من قبل الامانة', '0', 4),
@@ -11402,7 +11403,7 @@ ALTER TABLE `lifting_images`
 -- AUTO_INCREMENT for table `lifting_procedures`
 --
 ALTER TABLE `lifting_procedures`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
 
 --
 -- AUTO_INCREMENT for table `manufactures`

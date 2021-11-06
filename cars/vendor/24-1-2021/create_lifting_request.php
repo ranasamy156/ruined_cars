@@ -768,8 +768,9 @@ input required[type=number] {
                   $stmt->bindParam(40, $type, PDO::PARAM_STR, 100);
                   $stmt->bindParam(41, $notes, PDO::PARAM_STR, 250);
                   $stmt->execute();
-                  echo $conn->lastInsertId();
-                exit;
+                  $last_id = $conn->lastInsertId();
+                  // echo $last_id;
+                  // exit;
                   $sql = "CALL insertLiftingProceduresIdInReq(? , ?)";
                   $stmt = $conn->prepare($sql);
                   $stmt->bindParam(1, $last_id, PDO::PARAM_INT);

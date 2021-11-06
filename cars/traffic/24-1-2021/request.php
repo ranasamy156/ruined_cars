@@ -561,7 +561,7 @@ $(document).ready(function(){
             
             <?php //if($row1['user_id'] == $_SESSION['id']){ ?>
               <td> <a href="delcomment.php?n=<?php //echo ($row1['id']) ?>"> حذف </a> </td>
-              <?php// } ?>
+              <?php // } ?>
 
 -->
 <p style="page-break-after: always;"></p>
@@ -703,7 +703,7 @@ $(document).ready(function(){
               <td> <?php //echo ($row1["request_id"]); ?> </td>
               <td> <?php //echo ($row1["description"]); ?>  </td>
               <td> <?php //echo ($row1["name"]); ?> </td>
-               <td> <?php// echo ($row1["user_type"]); ?> </td>
+               <td> <?php // echo ($row1["user_type"]); ?> </td>
             </tbody>
             <?php
                     //  }
@@ -866,7 +866,7 @@ $(document).ready(function(){
             <div class="modal-content">
 
               <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel"><?php// echo $expr['statuslist'] ?></h4>
+                <h4 class="modal-title" id="myLargeModalLabel"><?php // echo $expr['statuslist'] ?></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">×</span>
                 </button>

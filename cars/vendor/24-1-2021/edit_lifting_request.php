@@ -689,11 +689,11 @@ input required[type=number] {
 
               <!-- Full-width images with number and caption text -->
               <?php
-
-              $rs = $db->GetData("select * from lifting_images where procedure_id=".$_GET['n']);
-
-              if ($rowphoto = mysqli_fetch_assoc($rs)) {
-                foreach ($rs as $rowphoto) {
+                $sql = "CALL getLiftingProcedureImages(?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(1, $liftID, PDO::PARAM_INT);
+                $stmt->execute();
+                foreach ($stmt as $rowphoto) {
                   $image = $rowphoto['location'];
               ?>
             <div class="img-thumbnail" title="<?php echo $expr['photoinstruction'] ?>">
@@ -718,7 +718,7 @@ input required[type=number] {
                 <!-- end of modal -->
               <?php
                 }
-              }
+              
               ?>
               
             </div>
@@ -737,64 +737,150 @@ input required[type=number] {
             <!-- <img src="../../images/pro_footer.jpeg" width="100%" height="200px">   -->
           <?php
             if(isset($_POST['save'])){
-              require_once '../database.php';
-              $database = new Database();
+                  $liftID = $_GET['n'];
+                  $structure_top = $_POST['structure_top'];
+                  $structure_fenders = $_POST['structure_fenders'];
+                  $structure_engine_hood = $_POST['structure_engine_hood'];
+                  $front_doors = $_POST['front_doors'];
+                  $back_doors = $_POST['back_doors'];
+                  $front_doors_no = $_POST['front_doors_no'];
+                  $back_doors_no = $_POST['back_doors_no'];
+                  $front_lights = $_POST['front_lights'];
+                  $back_lights = $_POST['back_lights'];
+                  $gear_box = $_POST['gear_box'];
+                  $back_lights_no = $_POST['back_lights_no'];
+                  $front_lights_no = $_POST['front_lights_no'];
+                  $difference = $_POST['difference'];
+                  $dashboard = $_POST['dashboard'];
+                  $internal_decorations = $_POST['internal_decorations'];
+                  $front_glass = $_POST['front_glass'];
+                  $back_glass = $_POST['back_glass'];
+                  $side_glass = $_POST['side_glass'];
+                  $front_tires = $_POST['front_tires'];
+                  $back_tires = $_POST['back_tires'];
+                  $front_tires_no = $_POST['front_tires_no'];
+                  $back_tires_no = $_POST['back_tires_no'];
+                  $paints = $_POST['paints'];
+                  $mirrors_1 = $_POST['mirrors_1'];
+                  $mirrors_2 = $_POST['mirrors_2'];
+                  $seats = $_POST['seats'];
+                  $grille = $_POST['grille'];
+                  $radio = $_POST['radio'];
+                  $front_bumper = $_POST['front_bumper'];
+                  $back_bumper = $_POST['back_bumper'];
+                  $plates = $_POST['plates'];
+                  $number_of_plates = $_POST['number_of_plates'];
+                  $engine = $_POST['engine'];
+                  $engine_exception = $_POST['engine_exception'];
+                  $is_protected = $_POST['is_protected'];
+                  $car_condition = $_POST['car_condition'];
+                  $is_armed = $_POST['is_armed'];
+                  $date = $_POST['date'];
+                  $type = $_POST['type'];
+                  $notes = $_POST['notes'];
+                  
+                  $sql = "CALL updateLiftingProcedures(? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?)";
+                  $stmt = $conn->prepare($sql);
+                  $stmt->bindParam(1, $structure_top, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(2, $structure_fenders, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(3, $structure_engine_hood, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(4, $front_doors, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(5, $back_doors, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(6, $front_doors_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(7, $back_doors_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(8, $front_lights, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(9, $back_lights, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(10, $gear_box, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(11, $back_lights_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(12, $front_lights_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(13, $difference, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(14, $dashboard, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(15, $internal_decorations, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(16, $front_glass, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(17, $back_glass, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(18, $side_glass, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(19, $front_tires, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(20, $back_tires, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(21, $front_tires_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(22, $back_tires_no, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(23, $paints, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(24, $mirrors_1, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(25, $mirrors_2, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(26, $seats, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(27, $grille, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(28, $radio, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(29, $front_bumper, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(30, $back_bumper, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(31, $plates, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(32, $number_of_plates, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(33, $engine, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(34, $engine_exception, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(35, $is_protected, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(36, $car_condition, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(37, $is_armed, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(38, $date, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(39, $type, PDO::PARAM_STR, 100);
+                  $stmt->bindParam(40, $notes, PDO::PARAM_STR, 250);
+                  $stmt->bindParam(41, $liftID, PDO::PARAM_INT);
+                  $stmt->execute();
 
-              $save = $database->RunDML("update lifting_procedures set structure_top = '".$_POST['structure_top']."',
-              structure_fenders = '".$_POST['structure_fenders']."', structure_engine_hood = '".$_POST['structure_engine_hood']."',
-              front_doors = '".$_POST['front_doors']."', back_doors = '".$_POST['back_doors']."',front_doors_no = '".$_POST['front_doors_no']."', back_doors_no = '".$_POST['back_doors_no']."', front_lights = '".$_POST['front_lights']."',
-              back_lights = '".$_POST['back_lights']."', gear_box = '".$_POST['gear_box']."', back_lights_no = '".$_POST['back_lights_no']."', front_lights_no = '".$_POST['front_lights_no']."', difference = '".$_POST['difference']."',
-              dashboard = '".$_POST['dashboard']."',internal_decorations = '".$_POST['internal_decorations']."',
-              front_glass = '".$_POST['front_glass']."',back_glass = '".$_POST['back_glass']."', side_glass = '".$_POST['side_glass']."',
-              front_tires = '".$_POST['front_tires']."', back_tires = '".$_POST['back_tires']."', front_tires_no = '".$_POST['front_tires_no']."', back_tires_no = '".$_POST['back_tires_no']."', paints = '".$_POST['paints']."',
-              mirrors_1 = '".$_POST['mirrors_1']."', mirrors_2 = '".$_POST['mirrors_2']."', seats = '".$_POST['seats']."', grille = '".$_POST['grille']."', radio = '".$_POST['radio']."',
-              front_bumper = '".$_POST['front_bumper']."', back_bumper = '".$_POST['back_bumper']."', plates = '".$_POST['plates']."',
-              number_of_plates = '".$_POST['number_of_plates']."', engine = '".$_POST['engine']."', engine_exception = '".$_POST['engine_exception']."',
-              is_protected = '".$_POST['is_protected']."', car_condition = '".$_POST['car_condition']."', is_armed = '".$_POST['is_armed']."',
-              created_at = '".$_POST['date']."', type = '".$_POST['type']."' where id=".$_GET['n']);
-
-              $last_id = $database->mysqli_insert_id();
-
-              if($save == "ok"){
                 $extensions = ['jpeg','jpg','gif','png','swf','tiff'];
-                // Count # of uploaded files in array
-                $total = count($_FILES['upload']['name']);
-                
-                // Loop through each file
-                for( $i=0 ; $i < $total ; $i++ ) {
-                  $ext = pathinfo($_FILES['upload']['name'][$i], PATHINFO_EXTENSION);
+                  
+                  // Count # of uploaded files in array
+                  $total = count($_FILES['upload']['name']);
+                  // Loop through each file
+                  for( $i=0 ; $i < $total ; $i++ ) {
+                    $ext = pathinfo($_FILES['upload']['name'][$i], PATHINFO_EXTENSION);
                     if (in_array($ext, $extensions)) {
-                  $dir ="../../images/";
-  
-                  //Get the temp file path
-                  $tmpFilePath = $_FILES['upload']['tmp_name'][$i];
-  
-                  //Make sure we have a file path
-                  if ($tmpFilePath != ""){
-                    //Setup our new file path
-                    $newFilePath = $dir . $_FILES['upload']['name'][$i];
-  
-                    //Upload the file into the temp dir
-                    if(move_uploaded_file($tmpFilePath, $newFilePath)) {
-  
-                      $img = $database->RunDML("insert into lifting_images values (default, '".$newFilePath."', '".$_GET['n']."')");
-  
+                      $dir ="../../images/";
+                      //Get the temp file path
+                      $tmpFilePath = $_FILES['upload']['tmp_name'][$i];
+      
+                      //Make sure we have a file path
+                      if ($tmpFilePath != ""){
+                        //Setup our new file path
+                        $newFilePath = $dir . $_FILES['upload']['name'][$i];
+      
+                        //Upload the file into the temp dir
+                        if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+      
+                          $sql = "CALL insertLiftingImages(? , ?)";
+                          $stmt = $conn->prepare($sql);
+                          $stmt->bindParam(1, $newFilePath, PDO::PARAM_LOB);
+                          $stmt->bindParam(2, $liftID, PDO::PARAM_INT);
+                          $stmt->execute();
+      
+                        }
+                      }
+                    }else{
+                      echo "<script> alert('الملف غير مدعوم. الملفات المدعومة هي pdf ، jpg ، jpeg ، gif ، swf ، tiff') </script>";
                     }
                   }
-                }else{
-                  echo "<script> alert('الملف غير مدعوم. الملفات المدعومة هي pdf ، jpg ، jpeg ، gif ، swf ، tiff') </script>";
-                }
-                }
 
                 $message = "تم تعديل محضر رفع للطلب رقم ".$_GET['r'];
-                $msg2 = $database->RunDML("insert into notification values (Default, '".$_GET['r']."' , '".$message."' , '0' , '3')");
-                $msg3 = $database->RunDML("insert into notification values (Default, '".$_GET['r']."' , '".$message."' , '0' , '4')");
-                $msg4 = $database->RunDML("insert into notification values (Default, '".$_GET['r']."' , '".$message."' , '0' , '2')");
+                // investigation not
+                $sql = "CALL insertInvestigationsNotifications(? , ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                $stmt->bindParam(2, $messagepro, PDO::PARAM_STR, 100);
+                $stmt->execute();
+            
+              // Amana not
+                $sql = "CALL insertAmanaNotifications(? , ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                $stmt->bindParam(2, $messagepro, PDO::PARAM_STR, 100);
+                $stmt->execute();
+
+              // traffic not
+                $sql = "CALL insertTrafficNotifications(? , ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                $stmt->bindParam(2, $messagepro, PDO::PARAM_STR, 100);
+                $stmt->execute();
                 echo("<script> alert('تم تعديل محضر الرفع بنجاح')</script>");
                 echo("<script> window.open('edit_lifting_request.php?n=".$_GET['n']."&r=".$_GET['r']."' , '_self') </script>");
-              }else{
-                echo "error is ".$save;
-              }
+              
             }
           ?>
       </div>
