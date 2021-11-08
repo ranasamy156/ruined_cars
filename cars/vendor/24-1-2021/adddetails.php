@@ -1,5 +1,6 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["permission_des"] == 'admin' && $_SESSION["type_id"] == "1") {
 ?>
@@ -9,55 +10,9 @@ if (isset($_SESSION["id"])) {
   <head>
     <meta charset="UTF-8">
     <title><?php echo $expr['addusers'] ?></title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <!-- Ionicons 2.0.0 -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-   <!-- iCheck -->
-    <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
-    <!-- Morris chart -->
-    <link rel="stylesheet" href="plugins/morris/morris.css">
-    <!-- jvectormap -->
-    <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-    <!-- Date Picker -->
-    <link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
-    <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-    <?php if($expr['direction'] == 'rtl'){ ?>
-      <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="dist/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="dist/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
-    <?php }else{ ?>
-       <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="disten/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="disten/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
-    <?php
-     }?>
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <!-- CSS FILES --> 
+    <?php require 'layout.php'; ?>
+    <!-- CSS FILES --> 
     <style>
         @import url(https://fonts.googleapis.com/earlyaccess/amiri.css);
         /* font-family: 'Amiri', serif; */
@@ -137,22 +92,30 @@ if (isset($_SESSION["id"])) {
                 // $p="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/";
                 // if(preg_match($p,$_POST["password"]))
                 // {
-                  include_once "../users.php";
-                  $user1=new Users();
+
                   if($_POST["password"] == $_POST["confirm"])
                   {
-                    $user1->setname($_POST["name"]);
-                    $user1->setphone($_POST["phone"]);
-                    $user1->setusername($_POST["username"]);
-                    $user1->setpassword($_POST["password"]);
+                    $name = $_POST["name"];
+                    $phone = $_POST["phone"];
+                    $userName = $_POST["username"];
+                    $pass = $_POST["password"];
+                    $typeID = $_SESSION['type_id'];
+                    $sql = "CALL insertUsers(? , ? , ? , ? , ?)";
 
-                    $msg=$user1->add();
-                    if($msg=="ok")
-                    echo("<div class='alert alert-success'>" .$expr['addsuccess']. "</div>");	
-                    else if (strpos($msg,'user_name'))
-                    echo("<div class='alert alert-warning'>" .$expr['usernamemessage']. "</div>");	
-                    else
-                      echo("<div class='alert alert-danger'> Error is".$msg."</div>");	
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(1, $name, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(2, $phone, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(3, $userName, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(4, $pass, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(5, $typeID, PDO::PARAM_INT);
+                    $rs = $stmt->execute();
+                    if($rs){
+
+                      echo("<div class='alert alert-success'>" .$expr['addsuccess']. "</div>");	
+                    }else{
+                      echo("<div class='alert alert-danger'>اسم المستخدم او رقم الجوال تم استخدامهم سابقا</div>");
+                      
+                    }
                   }else {
                     echo("<div class='alert alert-danger'>" .$expr['confirmpassmessage']. "</div>");
 

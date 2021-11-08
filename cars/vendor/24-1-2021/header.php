@@ -1,6 +1,6 @@
 <header class="main-header">
         <!-- Logo -->
-        <a href="../index.php?id=<?php echo $_SESSION['id'] ?>" class="logo">
+        <a href="../index.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
           <span class="logo-mini"><b>A</b>LT</span>
           <!-- logo for regular state and mobile devices -->
@@ -53,13 +53,13 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="dist/img/new.png" class="user-image" alt="User Image">
+                  <img src="../../assets/dist/img/new.png" class="user-image" alt="User Image">
                   <span class="hidden-xs"><?php echo $_SESSION['name']; ?></span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="dist/img/new.png" class="img-circle" alt="User Image">
+                    <img src="../../assets/dist/img/new.png" class="img-circle" alt="User Image">
                     <p>
                     <?php echo $_SESSION['name']; ?>
                       <small><?php echo $_SESSION['phone']; ?></small>

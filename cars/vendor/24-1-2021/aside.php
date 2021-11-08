@@ -4,7 +4,7 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-<?php echo $expr['right'] ?> image">
-              <img src="dist/img/new.png" class="img-circle" alt="User Image">
+              <img src="../../assets/dist/img/new.png" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
               <p><?php echo $_SESSION['name']; ?></p>
@@ -14,7 +14,7 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="active treeview">
-              <a href="../index.php?id=<?php echo $_SESSION['id'] ?>">
+              <a href="../index.php">
                 <i class="fa fa-dashboard"></i> <span><?php echo $expr['mainmenu'] ?></span> <i class="fa fa-angle-left pull-left"></i>
               </a>
             </li>
