@@ -4,7 +4,7 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-<?php echo $expr['right'] ?> image">
-              <img src="dist/img/new.png" class="img-circle" alt="User Image">
+              <img src="../../assets/dist/img/new.png" class="img-circle" alt="User Image">
             </div>
             <div class="pull-<?php echo $expr['left'] ?> info">
               <p><?php echo $_SESSION['name']; ?></p>
@@ -14,7 +14,7 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="active treeview">
-              <a href="../index.php?id=<?php echo $_SESSION['id'] ?>">
+              <a href="../index.php">
                 <i class="fa fa-dashboard"></i> <span><?php echo $expr['mainmenu'] ?></span> <i class="fa fa-angle-<?php echo $expr['left'] ?> pull-<?php echo $expr['left'] ?>"></i>
               </a>
             </li>
@@ -53,17 +53,6 @@
                 <li><a href="reqlist.php"><i class="fa fa-circle-o"></i> <?php echo $expr['statuslist'] ?> </a></li>
               </ul>
             </li>
-            <!-- <li>
-            <?php
-                // include_once '../database.php';
-                // $req1 = new Database();
-                // $rs = $req1->GetData("select rq.* ,st.description as status_name ,us.name from request rq ,statuses st, users us where rq.user_id = us.id and rq.status_id=st.id and rq.updated_at < now() - interval 7 DAY order by rq.id desc");
-                // $pen = $rs->num_rows;
-                ?>
-              <a href="pending.php">
-             <i class="fa fa-hourglass-half" aria-hidden="true"></i> <span><?php //echo $expr['pendingrequests'] ?></span> <span class="badge badge-danger"><?php //echo $pen; ?></span>-->
-              <!-- </a>
-            </li> -->
             <li>
               <a href="closed.php">
               <i class="fa fa-times-circle" aria-hidden="true"></i> <span><?php echo $expr['closedrequests'] ?></span>

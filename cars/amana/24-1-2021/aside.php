@@ -14,7 +14,7 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="active treeview">
-              <a href="../index.php?id=<?php echo $_SESSION['id'] ?>">
+              <a href="../index.php">
                 <i class="fa fa-dashboard"></i> <span><?php echo $expr['mainmenu'] ?></span> <i class="fa fa-angle-left pull-left"></i>
               </a>
             </li>
@@ -74,22 +74,6 @@
                 <i class="fa fa-car" aria-hidden="true"></i> <span><?php echo $expr['cars'] ?></span>
               </a>
             </li>
-            <!-- <li>
-            <?php
-                // include_once '../database.php';
-                // $req1 = new Database();
-                // $rs = $req1->GetData("select rq.* ,st.description as status_name ,us.name from request rq ,statuses st, users us where rq.user_id = us.id and rq.status_id=st.id and rq.updated_at < now() - interval 7 DAY order by rq.id desc");
-                // $pen = $rs->num_rows;
-                ?>
-              <a href="pending.php">
-             <i class="fa fa-hourglass-half" aria-hidden="true"></i> <span><?php echo $expr['pendingrequests'] ?></span> <span class="badge badge-danger"><?php //echo $pen; ?></span>
-              </a>
-            </li>
-            <li>
-              <a href="readytobeclosed.php">
-              <i class="fa fa-clone" aria-hidden="true"></i> <span><?php echo $expr['readytobeclosed'] ?></span>
-              </a>
-            </li> -->
             <li>
               <a href="closed.php">
               <i class="fa fa-times-circle" aria-hidden="true"></i> <span><?php echo $expr['closedrequests'] ?></span>

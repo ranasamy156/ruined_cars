@@ -54,7 +54,7 @@ if (isset($_SESSION["id"])) {
             <?php echo $expr['controlpanel'] ?>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="index.php?id=<?php echo $_SESSION['id'] ?>"><i class="fa fa-dashboard"></i><?php echo $expr['mainmenu'] ?></a></li>
+            <li><a href="index.php"><i class="fa fa-dashboard"></i><?php echo $expr['mainmenu'] ?></a></li>
             <li class="active"><?php echo $expr['controlpanel'] ?></li>
           </ol>
         </section>
@@ -63,11 +63,10 @@ if (isset($_SESSION["id"])) {
         <section class="content">
         <div class="row">
         <?php
-          include_once '../database.php';
-          $req1 = new Database();
-          $rs2 = $req1->GetData("select * from num_accept where id = 1");
-          
-          $row2 = mysqli_fetch_assoc($rs2)
+          $sql = "CALL getNumberOfAccept()";
+          $stmt = $conn->prepare($sql);
+          $stmt->execute();
+          $row2 = $stmt->fetch();
         ?>
 
           <div class="row">

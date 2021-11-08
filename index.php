@@ -1,13 +1,6 @@
 <?php
   session_start();
   require 'database.php';
-  $db = new Database();
-
-  $news = $db->GetData("select * from news");
-  $row_news = mysqli_fetch_array($news);
-
-  $photos = $db->GetData("select * from slider");
-  $row_photos = mysqli_fetch_array($photos);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -88,9 +81,14 @@
     <!-- NEWS TICKER -->
     <div class="hwrap d-flex justify-content-between align-items-center">
       <div class="hmove">
-        <div class="hitem">
-        بدعم ورعاية خادم الحرمين الشريفين حفظه الله، أُطلقت رؤية المملكة 2030، وهي رؤية سمو ولي العهد لمستقبل هذا الوطن العظيم، والتي تسعى لاستثمار مكامن قوّتنا التي حبانا الله بها، من موقع استراتيجي متميز، وقوة استثمارية رائدة، وعمق عربيّ وإسلاميّ، حيث تولي القيادة لذلك كل الاهتمام، وتسخّر كل الإمكانات لتحقيق الطموحات.
-        </div>
+        <?php
+          // $sql = "CALL apiNews()";
+          // $stmt = $conn->prepare($sql);
+          // $stmt->execute();
+          // foreach($stmt as $news){
+          //   echo '<div class="hitem">'.$news['description'].'</div>'; 
+          // } 
+        ?>
         <div class="hitem">
         بدعم ورعاية خادم الحرمين الشريفين حفظه الله، أُطلقت رؤية المملكة 2030، وهي رؤية سمو ولي العهد لمستقبل هذا الوطن العظيم، والتي تسعى لاستثمار مكامن قوّتنا التي حبانا الله بها، من موقع استراتيجي متميز، وقوة استثمارية رائدة، وعمق عربيّ وإسلاميّ، حيث تولي القيادة لذلك كل الاهتمام، وتسخّر كل الإمكانات لتحقيق الطموحات.
         </div>
@@ -342,8 +340,14 @@
               <button type="submit" class="btn btn-success" name="login">دخول</button>
               <?php
                   if(isset($_POST['login'])){
-                    $users = $db->GetData("select * from users where user_name = '".$_POST['username']."' and password = '".$_POST['password']."'");
-                    if($row_users = mysqli_fetch_array($users)){
+                    $username = $_POST['username'];
+                    $password = $_POST['password'];
+                    $sql = "CALL indexLogin(? , ?)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(1, $username, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(2, $password, PDO::PARAM_STR, 100);
+                    $stmt->execute();
+                    if($row_users = $stmt->fetch()){
                         $_SESSION['id']=$row_users['id'];
                         $_SESSION["permission_des"]=$row_users["permission_des"];
                         $_SESSION["name"]=$row_users["name"];
@@ -397,10 +401,14 @@
               <button type="submit" class="btn btn-success" name="search">استعلام</button>
               <?php
                   if(isset($_POST['search'])){
-                    $plate_number = $_POST['plate_number'];
-                    $search = $db->GetData("select rq.* ,st.description as status_name ,us.name as user_name from request rq ,statuses st, users us where (rq.plate_number like '%".$plate_number."%' or rq.en_platenum like '%".$plate_number."%') and rq.user_id = us.id and rq.status_id=st.id");
-                    $row_search = mysqli_fetch_array($search);
-                    echo("<script>window.open('search.php?n=".$row_search['id']."','_self')</script>");
+                    $word = $_POST['plate_number'];
+                    $sql = "CALL indexSearch(?)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(1, $word, PDO::PARAM_LOB);
+                    $stmt->execute();
+                    $rowmap = $stmt->fetchAll();
+                    print_r($rowmap);
+                    //echo("<script>window.open('search.php?n=".$row_search['id']."','_self')</script>");
                   }
               ?>
             </form>

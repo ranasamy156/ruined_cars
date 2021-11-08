@@ -2,20 +2,7 @@
 include 'lang.php';
 include_once '../hijri.php';
 include '../database.php';
-if (isset($_GET["id"])) {
-  $_SESSION['id']=$_GET['id'];
-  include_once 'users.php';
-  $user1= new Users();
-   $log=$user1->GetUserByID();
-  if($row=mysqli_fetch_assoc($log)){
-    $_SESSION["permission_des"]=$row["permission_des"];
-    $_SESSION["name"]=$row["name"];
-    $_SESSION["phone"]=$row["phone"];
-    $_SESSION["type_id"]=$row["type_id"];
-    $_SESSION["perm"]=$row["perm"];
-    $_SESSION['last_login_timestamp'] = time();  
-
-    
+if (isset($_SESSION['id'])) {
     if($_SESSION["type_id"] == "3"){
       $sql = "CALL getNumberOfAccept()";
       $stmt = $conn->prepare($sql);
@@ -104,7 +91,7 @@ if (isset($_GET["id"])) {
             <?php echo $expr['controlpanel'] ?>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="index.php?id=<?php echo $_SESSION['id'] ?>"><i class="fa fa-dashboard"></i><?php echo $expr['mainmenu'] ?></a></li>
+            <li><a href="index.php"><i class="fa fa-dashboard"></i><?php echo $expr['mainmenu'] ?></a></li>
             <li class="active"><?php echo $expr['controlpanel'] ?></li>
           </ol>
         </section>
@@ -289,7 +276,6 @@ if (isset($_GET["id"])) {
 <?php
 }else{
   header('location:http://alsaifit.com/');
-}
 } }else{
   header('location:http://alsaifit.com/');
 }

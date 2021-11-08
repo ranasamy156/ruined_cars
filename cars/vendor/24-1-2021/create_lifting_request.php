@@ -768,12 +768,17 @@ input required[type=number] {
                   $stmt->bindParam(40, $type, PDO::PARAM_STR, 100);
                   $stmt->bindParam(41, $notes, PDO::PARAM_STR, 250);
                   $stmt->execute();
-                  $last_id = $conn->lastInsertId();
-                  // echo $last_id;
-                  // exit;
+
+                  // get last id inserted
+                  $sql = "CALL getLiftingProcedureByReqID(?)";
+                  $stmt = $conn->prepare($sql);
+                  $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+                  $stmt->execute();
+                  $last_id = $stmt->fetch();
+                  
                   $sql = "CALL insertLiftingProceduresIdInReq(? , ?)";
                   $stmt = $conn->prepare($sql);
-                  $stmt->bindParam(1, $last_id, PDO::PARAM_INT);
+                  $stmt->bindParam(1, $last_id['id'], PDO::PARAM_INT);
                   $stmt->bindParam(2, $reqID, PDO::PARAM_INT);
                   $stmt->execute();
                   
@@ -800,7 +805,7 @@ input required[type=number] {
                           $sql = "CALL insertLiftingImages(? , ?)";
                           $stmt = $conn->prepare($sql);
                           $stmt->bindParam(1, $newFilePath, PDO::PARAM_LOB);
-                          $stmt->bindParam(2, $last_id, PDO::PARAM_INT);
+                          $stmt->bindParam(2, $last_id['id'], PDO::PARAM_INT);
                           $stmt->execute();
       
                         }
@@ -811,7 +816,7 @@ input required[type=number] {
                   }
 
                   $messagepro = "تم انشاء محضر رفع للطلب رقم ".$_GET['r'];
-                  // investigation not
+                // investigation not
                   $sql = "CALL insertInvestigationsNotifications(? , ?)";
                   $stmt = $conn->prepare($sql);
                   $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
@@ -832,7 +837,7 @@ input required[type=number] {
                   $stmt->bindParam(2, $messagepro, PDO::PARAM_STR, 100);
                   $stmt->execute();
                   echo("<script> alert('تم انشاء محضر الرفع بنجاح')</script>");
-                  echo("<script> window.open('view_lifting_request.php?n=".$last_id."&r=".$_GET['r']."' , '_self') </script>");
+                  echo("<script> window.open('view_lifting_request.php?n=".$last_id['id']."&r=".$_GET['r']."' , '_self') </script>");
 
               } catch(PDOException $e){
                 print "Error!: " . $e->getMessage() . "</br>";

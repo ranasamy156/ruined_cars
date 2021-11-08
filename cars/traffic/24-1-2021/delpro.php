@@ -1,8 +1,11 @@
 <?php
     session_start();
-    include_once '../Procedures.php';
-    $pro1= new Procedures();
-    $rs= $pro1->delete();
-     echo("<script> window.open('procedureslist.php' , '_self') </script>");
-   
+    include '../../database.php';
+    $itemID = $_GET['n'];
+    $sql = "CALL deleteProcedure(?)";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(1, $itemID, PDO::PARAM_INT);
+    $rs = $stmt->execute();
+    echo("<script> window.open('procedureslist.php' , '_self') </script>");
 ?>

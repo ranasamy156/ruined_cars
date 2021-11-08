@@ -5,6 +5,7 @@ $pass = '';
 
 try {
     $conn = new PDO($dsn, $user, $pass);
+    $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES,TRUE);
 } catch (PDOException $e) {
     echo 'failed '.$e->getMessage();
 }

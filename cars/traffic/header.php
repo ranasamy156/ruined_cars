@@ -1,7 +1,7 @@
 <header class="main-header">
       
       <!-- Logo -->
-      <a href="index.php?id=<?php echo $_SESSION['id'] ?>" class="logo">
+      <a href="index.php" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini"><b>A</b>LT</span>
         <!-- logo for regular state and mobile devices -->
@@ -98,7 +98,7 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="active treeview">
-              <a href="index.php?id=<?php echo $_SESSION['id'] ?>">
+              <a href="index.php">
                 <i class="fa fa-dashboard"></i> <span>
                   <?php echo $expr['controlpanel'] ?></span> <i class="fa fa-angle-<?php echo $expr['left'] ?> pull-<?php echo $expr['left'] ?>"></i>
               </a>

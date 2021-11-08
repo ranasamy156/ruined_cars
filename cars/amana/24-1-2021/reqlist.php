@@ -107,7 +107,7 @@ if (isset($_SESSION["id"])) {
                     <?php
                       }
                         ?>
-       </table>
+        </table>
                   </div>
         <!-- Content Header (Page header) -->
 

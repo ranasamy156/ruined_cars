@@ -47,7 +47,7 @@ if (isset($_SESSION["id"])) {
             <?php echo $expr['controlpanel'] ?>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="index.php?id=<?php echo $_SESSION['id'] ?>"><i class="fa fa-dashboard"></i><?php echo $expr['mainmenu'] ?></a></li>
+            <li><a href="index.php"><i class="fa fa-dashboard"></i><?php echo $expr['mainmenu'] ?></a></li>
             <li class="active"><?php echo $expr['controlpanel'] ?></li>
           </ol>
         </section>

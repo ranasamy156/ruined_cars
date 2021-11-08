@@ -1,12 +1,18 @@
 <?php
 include 'lang.php';
+include '../../database.php';
 if (isset($_SESSION["id"])) {
   if($_SESSION["type_id"] == "3"){
-  
-    include_once '../database.php';
-    $newdb = new Database();
-    $new = $newdb->RunDML("update notification set seen = '1' where type_id = '3' and request_id =".$_GET['n']);
-    
+    $reqID = $_GET['n'];
+
+    // set notification to seen
+    $notificationQuery = "CALL seenNotifications(? , ?)";
+    $stmt = $conn->prepare($notificationQuery);
+    $stmt->bindParam(1, $_SESSION['type_id'], PDO::PARAM_INT);
+    $stmt->bindParam(2, $reqID, PDO::PARAM_INT);
+    $stmt->execute();
+
+
   $coordinates = array();
   $latitudes = array();
   $longitudes = array();
@@ -14,20 +20,20 @@ if (isset($_SESSION["id"])) {
  // Select all the rows in the markers table
    // $query = "SELECT  `lat`, `lng` FROM `requests` WHERE ";
    // $mysqli->query($query) or die('data selection for google map failed: ' . $mysqli->error);
-   include_once '../RequestClass.php';
-   $db = new Requests();
- $result = $db->GetMapById();
 
-  while ($row = mysqli_fetch_array($result)) {
-
-   $latitudes[] = $row['lat'];
-   $longitudes[] = $row['lng'];
-   $coordinates[] = 'new google.maps.LatLng(' . $row['lat'] .','. $row['lng'] .'),';
- }
+    $mapQuery = "CALL getMapById(?)";
+    $stmt = $conn->prepare($mapQuery);
+    $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+    $stmt->execute();
+    $rowmap = $stmt->fetch();    
+    $latitudes[] = $rowmap['lat'];
+    $longitudes[] = $rowmap['lng'];
+    $coordinates[] = 'new google.maps.LatLng(' . $rowmap['lat'] .','. $rowmap['lng'] .'),';
+    
 
  //remove the comaa ',' from last coordinate
  $lastcount = count($coordinates)-1;
- $coordinates[$lastcount] = trim($coordinates[$lastcount], ",");	
+ $coordinates[$lastcount] = trim($coordinates[$lastcount], ",");
 ?>
   <!DOCTYPE html>
 
@@ -36,54 +42,9 @@ if (isset($_SESSION["id"])) {
   <head>
   <meta charset="UTF-8">
     <title><?php echo $expr['requestdetails'] ?></title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-   <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <!-- Ionicons 2.0.0 -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-   <!-- iCheck -->
-    <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
-    <!-- Morris chart -->
-    <link rel="stylesheet" href="plugins/morris/morris.css">
-    <!-- jvectormap -->
-    <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-    <!-- Date Picker -->
-    <link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
-    <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-    <?php if($expr['direction'] == 'rtl'){ ?>
-      <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="dist/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="dist/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
-    <?php }else{ ?>
-       <!-- Bootstrap 3.3.4 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-      <!-- <link rel="stylesheet" href="dist/fonts/fonts-fa.css"> -->
-      <link rel="stylesheet" href="disten/css/bootstrap-rtl.min.css">
-      <link rel="stylesheet" href="disten/css/rtl.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="disten/css/AdminLTE.min.css">
-      <!-- AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load. -->
-      <link rel="stylesheet" href="disten/css/skins/_all-skins.min.css">
-    <?php
-     }?>
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+        <!-- CSS FILES --> 
+        <?php require 'layout.php'; ?>
+    <!-- CSS FILES -->
     <style>
       .icons {
         color: #AF121E;
@@ -426,19 +387,25 @@ $(document).ready(function(){
       
       <div class="content-wrapper">
       <?php
-          include_once '../RequestClass.php';
-          $req1 = new Requests();
-          $modelcheck = $req1->GetMapById();
-          $rowmodel = mysqli_fetch_assoc($modelcheck);
-          if($rowmodel['model_id'] == 0 && $rowmodel['man_id'] == 0){
-            $rs = $req1->GetReqById2();
-          }elseif($rowmodel['man_id'] != 0 && $rowmodel['model_id'] == 0){
-            $rs = $req1->GetReqById3();
-          }else{
-            $rs = $req1->GetReqById();
-          }
+        $mapQuery = "CALL getMapById(?)";
+        $stmt = $conn->prepare($mapQuery);
+        $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+        $stmt->execute();
+        $rowmap = $stmt->fetchAll();
+        
+        if($rowmap[0]['model_id'] == 0 && $rowmap[0]['man_id'] == 0){
+          $reqQuery = "CALL getReqById2(?)";
+        }elseif($rowmap[0]['man_id'] != 0 && $rowmap[0]['model_id'] == 0){
+          $reqQuery = "CALL getReqById3(?)";
+        }else{
+          $reqQuery = "CALL getReqById(?)";
+        }
+        $stmt = $conn->prepare($reqQuery);
+        $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+        $stmt->execute();
+        
 
-          if ($row = mysqli_fetch_assoc($rs)) {
+        if ($row = $stmt->fetch()) {
       ?>
       <form method="post">
     <div class="adminpanel">
@@ -530,13 +497,13 @@ $(document).ready(function(){
               <td><?php echo $expr['baladya'] ?></td>
               <td><?php echo ($row["baladya"]); ?> </td>
             </tr>
-            <?php if($rowmodel['man_id'] != 0){ ?>
+            <?php if($rowmap[0]['man_id'] != 0){ ?>
             <tr>
               <td><?php echo $expr['carman'] ?></td>
               <td><?php echo ($row["man_arname"]); ?> </td>
             </tr>
             <?php } ?>
-            <?php if($rowmodel['model_id'] != 0){ ?>
+            <?php if($rowmap[0]['model_id'] != 0){ ?>
             <tr>
               <td> <?php echo $expr['carmodel'] ?></td>
               <td><?php echo ($row["model_arname"]); ?> </td>
@@ -618,11 +585,14 @@ $(document).ready(function(){
             <!-- Full-width images with number and caption text -->
             <?php
 
-            $rs = $req1->GetReqImagesById();
-            $count = $rs->num_rows;
+            $sql = "CALL getReqImages(?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(1, $reqID, PDO::PARAM_INT);
+            $stmt->execute();
+            $count = $stmt->rowCount();
 
-            if ($rowphoto = mysqli_fetch_assoc($rs)) {
-              foreach ($rs as $rowphoto) {
+            
+              foreach ($stmt as $rowphoto) {
 
             ?>
 
@@ -646,7 +616,7 @@ $(document).ready(function(){
               </div>
               <!-- end of modal -->
             <?php
-              }
+              
             }
             ?>
             
@@ -656,309 +626,6 @@ $(document).ready(function(){
             <small><b>*<?php echo $expr['photoinstruction'] ?>*</b></small></br>
             <a href="printphotos.php?n=<?php echo $row['id'] ?>"><?php echo $expr['printphoto'] ?></a>
           </center>
-
-          
-
-
-
-
-
-          <!-- comments -->
-          <!-- <form method="post">
-            <?php
-          // include_once '../database.php';
-          // $db = new Database();
-          // $rs2 = $db->GetData("select com.* ,ustype.type as user_type, us.name from comments com, users_types ustype, users us where com.request_id = ".$_GET["n"]." and us.type_id = ustype.id and com.user_id = us.id");
-
-          ?>
-
-            
-          <h2 class="print-container" style="font-family:'Amiri', serif;text-align:<?php //echo $expr['align'] ?>;"><?php //echo $expr['comments'] ?></h2>
-          <table style="text-align:<?php //echo $expr['align'] ?>;font-size:medium;" class="table table-borderd table-striped print-container">
-          <thead>
-              <th> <?php //echo $expr['requestnum'] ?> </th>
-              <th>  <?php //echo $expr['comment'] ?></th>
-              <th>  <?php //echo $expr['usname'] ?></th>
-              <th>  <?php //echo $expr['ustype'] ?></th>
-            </thead>
-          <?php
-          // if ($row1 = mysqli_fetch_assoc($rs2)) {
-          // foreach($rs2 as $row1){ ?>
-            <tbody>
-              <td> <?php //echo ($row1["request_id"]); ?> </td>
-              <td> <?php //echo ($row1["description"]); ?>  </td>
-              <td> <?php //echo ($row1["name"]); ?> </td>
-               <td> <?php //echo ($row1["user_type"]); ?> </td>
-            </tbody>
-            <?php
-                      //}
-                        ?>
-              </table>
-              <?php
-            //}else{
-              ?>
-              <tbody>
-              <td> <?php //echo $expr['nocomments'] ?> </td>
-              </tbody>
-           <?php 
-            //}
-            ?>
-            </form>
-          </table>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><?php //echo $expr['add'] ?> <?php //echo $expr['comment'] ?></button>
-          <div class="modal bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="false">
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-              
-              <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel"><?php //echo $expr['add'] ?> <?php //echo $expr['comment'] ?></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div class="modal-body">
-              <form method="post">
-          <div class="box box-info" style="text-align:<?php //echo $expr['align'] ?>;">
-            <div class="box-body">
-                <div>
-                  <input type="text" name="comment" placeholder="<?php //echo $expr['add'] ?> <?php //echo $expr['comment'] ?>" maxlength="400" style="width: 100%; height: 125px; font-size: medium; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" />
-                </div>
-            </div>
-            <div class="box-footer clearfix">
-              <button class="pull-<?php// echo $expr['left'] ?> btn btn-default" name="sendcomment"><?php// echo $expr['sendcomment'] ?> <i class="fa fa-arrow-circle-<?php //echo $expr['left'] ?>"></i></button>
-            </div>
-          </div>
-          <?php
-                    // if(isset($_POST["sendcomment"]))
-                    // {
-                    //     include_once "../database.php";
-                    //     $db1=new Database();
-                    //     $messageco = "تم اضافة تعليق جديد من البحث الجنائي في طلب رقم ".$_GET['n'];
-                    //     $rs1 = $db1->RunDML("insert into comments values (Default, '".$_POST['comment']."' , '".$_SESSION['id']."' , '".$_GET['n']."')");
-                    //     $rs4 = $db1->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$messageco."' , '0' , '4')");
-                    //     $rs5 = $db1->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$messageco."' , '0' , '2')");
-                    //     $rs6 = $db1->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$messageco."' , '0' , '1')");
-                    //     echo "<meta http-equiv='refresh' content='0.1'>";
-                    //   }
-                    ?>
-          </form>
-          </div>
-              </div>
-            </div>
-          </div> -->
-          <!-- end of comments -->
-
-<!-- procedures -->
-<!-- <div style="margin-bottom:5px;">
-        <form method="post">
-            <?php
-          //  include_once '../Procedures.php';
-          //  $req1 = new Procedures();
-          //  $msg = $req1->GetReqProcedures();
-          
-               ?>
-           
-           <h2 class="print-container" style="font-family:'Amiri', serif;text-align:<?php //echo $expr['align'] ?>;"><?php //echo $expr['procedures'] ?></h2>
-           <table style="text-align:<?php //echo $expr['align'] ?>;font-size:medium;" class="table table-borderd table-striped print-container">
-           <thead>
-               <th> <?php //echo $expr['requestnum'] ?> </th>
-               <th>  <?php //echo $expr['prodesc'] ?></th>
-               <th>  <?php //echo $expr['procedure'] ?></th>
-               <th>  <?php //echo $expr['ustype'] ?></th>
-
-             </thead>
-           <?php 
-          //   if ($row1 = mysqli_fetch_assoc($msg)) {
-          //  foreach($msg as $row1){ ?>
-             <tbody>
-               <td> <?php //echo ($row1["request_id"]); ?> </td>
-               <td> <?php //echo ($row1["prodesc"]); ?>  </td>
-               <td> <?php //echo ($row1["description"]); ?>  </td>
-               <td> <?php //echo ($row1["user_type"]); ?>  </td>
-             </tbody>
-             <?php
-                      // }
-                         ?>
-               </table>
-               <?php
-             //}else{
-               ?>
-               <tbody>
-               <td> <?php //echo $expr['noprocedures'] ?> </td>
-               </tbody>
-            <?php 
-             //}
-            ?>
-            </form>
-          </table>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lgg"><?php //echo $expr['add'] ?> <?php //echo $expr['procedure'] ?></button>
-          <div class="modal bd-example-modal-lgg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="false">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-
-              <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel"><?php //echo $expr['choosepro'] ?></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div class="modal-body">
-              <form method="post">
-              <?php                
-                // include_once '../Procedures.php';
-                // $req1 = new Procedures();
-                // $msg = $req1->GetAll(); 
-              ?>
-              <div class="dropdown">
-                <select name="procedures" style="width:145px;">
-                  <option value="choose" selected disabled><?php //echo $expr['choose'] ?> <?php //echo $expr['procedure'] ?></option>
-                      <?php 
-                        // if($row3 = mysqli_fetch_assoc($msg)){
-                        //   foreach ($msg as $row3){ 
-                      ?>
-                  <option value="<?php //echo ($row3["id"]); ?>"><?php //echo ($row3["description"]); ?></option>
-                      <?php// }} ?>
-                </select>
-                <div>
-                  <input type="text" name="prodesc" placeholder="<?php //echo $expr['prodesc'] ?>" maxlength="400" style="width: 100%;margin-top:15px; height: 150px;font-size: medium; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" />
-                </div>
-                <button class="btn btn-danger btn-sm" name="sendpro"><?php //echo $expr['save'] ?></button>
-                <?php
-                  // if(isset($_POST['sendpro'])){
-                  //   $db5 = new database();
-                  //   $messagepro = "تم اضافة اجراء جديد من البحث الجنائي في طلب رقم ".$_GET['n'];
-                  //   $msg = $db5->RunDML("insert into requests_procedures values (Default, '".$_POST['prodesc']."', '".$_POST['procedures']."', '".$_GET['n']."', '".$_SESSION['type_id']."')");
-                  //   $msg2 = $db5->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$messagepro."' , '0' , '4')");
-                  //   $msg3 = $db5->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$messagepro."' , '0' , '2')");
-                  //   $msg4 = $db5->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$messagepro."' , '0' , '1')");
-                  //     echo "<meta http-equiv='refresh' content='0.1'>";
-                  // }
-                ?>
-                </div>
-           </form>
-              </div>
-            </div>
-          </div>
-        </div>
-</div> -->
-<!-- end of procedures -->
-<!-- CHANGE STATUS BUTTON -->
-<center>
-<!-- <div style="margin-bottom:5px;">
-          <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target=".bd-example-modal-lggg"><?php //echo $expr['changestatus'] ?></button>
-          <div class="modal bd-example-modal-lggg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="false">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-
-              <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel"><?php //echo $expr['statuslist'] ?></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div class="modal-body">
-              <form method="post">
-              <?php                
-                // include_once '../Status.php';
-                // $hs = new Status();
-                // $sh = $hs->GetAll(); 
-              ?>
-              <div class="dropdown">
-                <select name="stat" style="width:145px;">
-                  <option value="choose" selected disabled><?php //echo $expr['choose'] ?> <?php //echo $expr['onestatus'] ?></option>
-                      <?php 
-                        // if($roww = mysqli_fetch_assoc($sh)){
-                        //   foreach ($sh as $roww){ 
-                      ?>
-                  <option value="<?php //echo ($roww["id"]); ?>"><?php// echo ($roww["description"]); ?></option>
-                      <?php// }} ?>
-                </select>
-                </br></br><button class="btn btn-danger btn-md" name="chngests"><?php// echo $expr['changestatus'] ?></button>
-                <?php
-                  // if(isset($_POST['chngests'])){
-                  //   include_once '../database.php';
-                  //   $change = new Database();
-                  //   $messagests = "تم تغيير حالة الطلب رقم ".$_GET['n'];
-                  //   $stat = $change->RunDML("update request set status_id='".$_POST['stat']."' where id='".$_GET["n"]."' ");
-                  //   $stat2 = $change->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$messagests."' , '0' , '4')");
-                  //   $stat3 = $change->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$messagests."' , '0' , '2')");
-                  //   $stat4 = $change->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$messagests."' , '0' , '1')");
-                  //   echo "<meta http-equiv='refresh' content='0.1'>";
-                  //  }
-                ?>
-                </div>
-           </form>
-              </div>
-            </div>
-          </div>
-        </div>
-</div> -->
-</center>
-<!-- end of change status button -->
-
-          <!-- OLD STATUSES BUTTONS -->
-
-          <!-- <button type="button" class="btn btn-primary btn-lg" style="float:right">Large button</button> -->
-          <?php
-          //  include_once '../RequestClass.php';
-          //  $req1 = new Requests();
-          //  $rs = $req1->GetReqById();
- 
-          //  if ($row = mysqli_fetch_assoc($rs)) {
-          //     if($row["sts_name"] == "تحت مراجعة البحث الجنائي"){
-            ?>
-<!--             
-          <button name="btnaccept" class="btn btn-success btn-lg" style="float:right">قبول الطلب</button>
-          <button name="btnreject" class="btn btn-danger btn-lg" style="float:left">رفض الطلب</button>
-          -->
-          <?php
-          //     if(isset($_POST['btnaccept'])){
-          //       include_once '../database.php';
-          //       $acc = new Database();
-          //       $message = " طلب رقم ".$_GET['n']." تحت مراجعة المرور.";
-          //       // $log = $acc->RunDML("update investigation set status_id='23' where request_id='".$row['id']."'");
-          //       // $log2 = $acc->RunDML("update traffic set status_id='23' where request_id='".$row['id']."'");
-          //       $log4 = $acc->RunDML("update request set status_id='23' where id='".$row['id']."'");
-          //       $log7 = $acc->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$message."' , '0' , '2')");
-          //       $log8 = $acc->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$message."' , '0' , '1')");
-          //       $log9 = $acc->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$message."' , '0' , '4')");
-          //       echo "<meta http-equiv='refresh' content='0.1'>";
-
-
-          //     }elseif (isset($_POST['btnreject'])) {
-          //       include_once '../database.php';
-          //       $acc1 = new Database();
-          //       $message1 = "  تم رفض الطلب رقم ".$_GET['n']." 
-          //       من قبل البحث الجنائي.";
-          //       // $log3 = $acc1->RunDML("update investigation set status_id='19' where request_id='".$row['id']."'");
-          //       // $log1 = $acc1->RunDML("update traffic set status_id='19' where request_id='".$row['id']."'");
-          //       $log2 = $acc1->RunDML("update request set status_id='19' where id='".$row['id']."'");
-          //       $log4 = $acc1->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$message1."' , '0' , '2')");
-          //       $log5 =  $acc1->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$message1."' , '0' , '4')");
-          //       $log6 =  $acc1->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$message1."' , '0' , '1')");
-          //       echo "<meta http-equiv='refresh' content='0.1'>";
-
-          //     }
-          // }elseif ($row["sts_name"] == "تم قبول السيارة") {
-           ?>
-                 <!-- <button name="btninv" class="btn btn-default btn-lg" style="float:<?php// echo $expr['right'] ?>">استئناف المراجعة</button> -->
-           <?php
-        //         if(isset($_POST['btninv'])){
-        //           include_once '../database.php';
-        //           $not = new Database();
-        //           $notification = " تستأنف البحث الجنائي مراجعة الطلب رقم ".$_GET['n'];
-        //           $mm = $not->RunDML("update request set status_id='26' where id='".$row['id']."'");
-        //           $mm1 = $not->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$notification."' , '0' , '2')");
-        //           $mm2 = $not->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$notification."' , '0' , '1')");
-        //           $mm3 = $not->RunDML("insert into notification values (Default, '".$_GET['n']."' , '".$notification."' , '0' , '4')");
-        //echo "<meta http-equiv='refresh' content='0.1'>";
-
-
-        //         }
-        //   }
-        // }
-              
-              ?>
         </div>
         
 
@@ -968,7 +635,9 @@ $(document).ready(function(){
       </div>
       </div>
 
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <?php require 'layoutjs.php'; ?>
+    <!-- GOOGLE MAPS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="http://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 
@@ -980,7 +649,6 @@ $(document).ready(function(){
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
     <script src="js/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
-    </form>
   </body>
 
   </html>
